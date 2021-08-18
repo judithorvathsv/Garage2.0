@@ -7,10 +7,12 @@ namespace Garage2._0.Models
 {
        // Testkommentar på svenska
        // Test Någonting nytt
+       //En till från min - Judit
        // Helen  kommenterar andra ggen
     // The Vehicle class Car
     public class Car
     {
-        public string Color;
+        public string Color { get; set; }
+        public int Id { get; set; }
     }
 }
