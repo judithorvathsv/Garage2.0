@@ -7,6 +7,7 @@ namespace Garage2._0.Models
 {
        // Testkommentar på svenska
        // Test Någonting nytt
+       //En till från min - Judit
     public class Car
     {
         public string Color;
