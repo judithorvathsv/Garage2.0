@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Garage2._0.Models
 {
+       // Testkommentar på svenska
        // Helen  kommenterar
     public class Car
     {
