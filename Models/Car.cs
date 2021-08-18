@@ -11,6 +11,7 @@ namespace Garage2._0.Models
     // The Vehicle class Car
     public class Car
     {
-        public string Color;
+        public string Color { get; set; }
+        public int Id { get; set; }
     }
 }
