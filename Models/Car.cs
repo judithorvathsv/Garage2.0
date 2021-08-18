@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Garage2._0.Models
 {
-       // Test comment
+       // Test Någonting nytt
     public class Car
     {
         public string Color;
