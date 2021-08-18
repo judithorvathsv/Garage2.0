@@ -12,5 +12,6 @@ namespace Garage2._0.Models
     {
         public string Color { get; set; }
         public int Id { get; set; }
+        public string Name{ get; set; }
     }
 }
