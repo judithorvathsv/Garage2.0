@@ -10,6 +10,7 @@ namespace Garage2._0.Models
        //En till från min - Judit
     public class Car
     {
-        public string Color;
+        public string Color { get; set; }
+        public int Id { get; set; }
     }
 }
