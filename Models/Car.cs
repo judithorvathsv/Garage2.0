@@ -7,7 +7,7 @@ namespace Garage2._0.Models
 {
        // Testkommentar på svenska
        // Test Någonting nytt
-       // Helen  kommenterar
+       // Helen  kommenterar andra ggen
     // The Vehicle class Car
     public class Car
     {
