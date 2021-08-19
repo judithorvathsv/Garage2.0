@@ -49,7 +49,10 @@ namespace Garage2._0.Controllers
             return View();
         }
 
-
+        public IActionResult Overview()
+        {
+            return View();
+        }
 
 
 
