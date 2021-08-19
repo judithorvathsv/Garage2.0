@@ -22,7 +22,7 @@
 
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label typeLabel">Type  </label>
-                <select name="vehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
+                <select name="VehicleType" asp-for="VehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
                     <option selected="selected" value="">Please select</option>
                 </select>
             </div>
