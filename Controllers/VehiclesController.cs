@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
+using Garage2._0.Models.ViewModels;
 
 namespace Garage2._0.Controllers
 {
@@ -49,9 +50,17 @@ namespace Garage2._0.Controllers
             return View();
         }
 
-        public IActionResult Overview()
+        public async Task<IActionResult> Overview()
         {
-            return View();
+            var model =  _context.Vehicle.Select(o => new OverviewViewModel
+            {
+                VehicleArrivalTime = o.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - o.TimeOfArrival,
+                VehicleRegistrationNumber = o.RegistrationNumber,
+                VehicleType = o.VehicleType
+            });
+            
+            return View(await model.ToListAsync());
         }
 
 
