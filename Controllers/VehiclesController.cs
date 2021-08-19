@@ -54,10 +54,11 @@ namespace Garage2._0.Controllers
         {
             var model =  _context.Vehicle.Select(o => new OverviewViewModel
             {
-                VehicleArrivalTime = o.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - o.TimeOfArrival,
+                VehicleId = o.Id,
+                VehicleType = o.VehicleType,
                 VehicleRegistrationNumber = o.RegistrationNumber,
-                VehicleType = o.VehicleType
+                VehicleArrivalTime = o.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - o.TimeOfArrival
             });
             
             return View(await model.ToListAsync());
