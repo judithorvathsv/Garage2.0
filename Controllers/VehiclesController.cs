@@ -50,9 +50,6 @@ namespace Garage2._0.Controllers
         }
 
 
-
-
-
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -69,6 +66,74 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
+
+
+
+
+
+        
+
+        public async Task<IActionResult> Change(int? Id)
+        {            
+     
+             if (Id == null)
+            {
+                return NotFound();
+            }
+
+             var vehicle = await _context.Vehicle.FindAsync(Id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+              
+            return View(vehicle);        
+        }
+
+        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
+        { 
+            //if (RegistrationNumber != vehicle.RegistrationNumber)
+               if (Id != vehicle.Id)
+            {
+                return NotFound();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(vehicle);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    if (!VehicleExists(vehicle.Id))                  
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vehicle);
+        }
+
+
+
+
+
+
+
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -84,7 +149,11 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
+        
 
+
+
+        
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -119,6 +188,11 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
+        
+
+
+
+
 
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
