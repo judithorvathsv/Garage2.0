@@ -16,6 +16,6 @@ namespace Garage2._0.Models
         Tricycle,
         Tank,     
         Boat,     
-        Airplace
+        Airplane
     }
 }

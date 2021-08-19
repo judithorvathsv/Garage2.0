@@ -1,10 +1,10 @@
 ﻿using Garage2._0.Data;
 using Garage2._0.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Garage2._0.Services
 {
@@ -17,33 +17,16 @@ namespace Garage2._0.Services
             this.db = db;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetVehicleTypeAsync()
+        public IEnumerable<SelectListItem> GetVehicleType()
         {
-            return Enum.GetValues(typeof(VehicleTypes))
-             .Cast<VehicleTypes>()
-             .Select(v => new SelectListItem
-             {
-                 Text = v.ToString(),
-                 Value = v.ToString()
-             }).ToList();
+            return 
+            Enum.GetValues(typeof(VehicleTypes))
+            .Cast<VehicleTypes>()
+            .Select(v => new SelectListItem
+            {
+            Text = v.ToString(),
+            Value = v.ToString()
+            }).ToList();
         }
-
-
-            //var vehicleTypes = new List<SelectListItem>();
-            //foreach (var v in Enum.GetValues(typeof(VehicleTypes)))
-            //{
-
-            //    vehicleTypes.Add(v.ToString()); ;
-            //}
-            //Enum.GetValues(typeof(VehicleTypes))
-
-            //return await Enum.GetValues(typeof(VehicleTypes))
-            // .Cast<VehicleTypes>()
-            // .Select(v => new SelectListItem
-            // {
-            //     Text = v.ToString(),
-            //     Value = v.ToString()
-            // }).ToList();
-     
     }
 }
