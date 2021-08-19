@@ -12,17 +12,17 @@ namespace Garage2._0.Controllers
 {
     public class VehiclesController : Controller
     {
-        private readonly Garage2_0Context _context;
+        private readonly Garage2_0Context db;
 
         public VehiclesController(Garage2_0Context context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicle.ToListAsync());
+            return View(await db.Vehicle.ToListAsync());
         }
 
         // GET: Vehicles/Details/5
@@ -33,7 +33,7 @@ namespace Garage2._0.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
+            var vehicle = await db.Vehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -55,15 +55,28 @@ namespace Garage2._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
+        public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
+            var model = new Vehicle
+            {
+                RegistrationNumber = vehicle.RegistrationNumber,
+                VehicleType = vehicle.VehicleType,
+                Brand = vehicle.Brand,
+                Color = vehicle.Color,
+                VehicleModel = vehicle.VehicleModel,
+                NumberOfWheels = vehicle.NumberOfWheels,
+                IsParked = true,
+                TimeOfArrival = DateTime.Now
+            };
+
             if (ModelState.IsValid)
             {
-                _context.Add(vehicle);
-                await _context.SaveChangesAsync();
+         
+                db.Add(model);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+            return View(model);
         }
 
 
@@ -142,7 +155,7 @@ namespace Garage2._0.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle.FindAsync(id);
+            var vehicle = await db.Vehicle.FindAsync(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -170,8 +183,8 @@ namespace Garage2._0.Controllers
             {
                 try
                 {
-                    _context.Update(vehicle);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicle);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -202,7 +215,7 @@ namespace Garage2._0.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
+            var vehicle = await db.Vehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -217,15 +230,15 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            _context.Vehicle.Remove(vehicle);
-            await _context.SaveChangesAsync();
+            var vehicle = await db.Vehicle.FindAsync(id);
+            db.Vehicle.Remove(vehicle);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleExists(int id)
         {
-            return _context.Vehicle.Any(e => e.Id == id);
+            return db.Vehicle.Any(e => e.Id == id);
         }
     }
 }
