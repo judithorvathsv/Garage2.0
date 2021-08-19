@@ -20,8 +20,8 @@
             </div>
 
 
-            <div class="input-group-append">
-                <label asp-for="VehicleType" class="control-label">Type:  </label>
+            <div class="form-group">
+                <label asp-for="VehicleType" class="control-label typeLabel">Type  </label>
                 <select name="vehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
                     <option selected="selected" value="">Please select</option>
                 </select>
@@ -52,7 +52,7 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Change" class="btn btn-primary" />
             </div>
         </form>
     </div>

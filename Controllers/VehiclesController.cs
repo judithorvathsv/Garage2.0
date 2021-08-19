@@ -84,17 +84,15 @@ namespace Garage2._0.Controllers
 
 
 
-        
-
         public async Task<IActionResult> Change(int? Id)
-        {            
+        {         
      
              if (Id == null)
             {
                 return NotFound();
             }
 
-             var vehicle = await _context.Vehicle.FindAsync(Id);
+             var vehicle = await db.Vehicle.FindAsync(Id);
 
             if (vehicle == null)
             {
@@ -109,20 +107,18 @@ namespace Garage2._0.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
-        { 
-            //if (RegistrationNumber != vehicle.RegistrationNumber)
+        {                     
                if (Id != vehicle.Id)
             {
                 return NotFound();
             }
 
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(vehicle);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicle);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
