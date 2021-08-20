@@ -1,0 +1,69 @@
+﻿@model ReceiptViewModel
+
+@{
+    ViewData["Title"] = "Recepit";
+    Layout = null;
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Garage2.0</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <main class="m-3 p-4">
+        <h1>Receipt</h1>
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <hr />
+                <form asp-action="Change">
+
+
+                    <div class="form-group">
+                        <label asp-for="VehicleRegistrationNumber" class="control-label"></label>
+                        <input asp-for="VehicleRegistrationNumber" class="form-control" readonly="@(true)" />
+                        <span asp-validation-for="VehicleRegistrationNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="VehicleArrivalTime" class="control-label"></label>
+                        <input asp-for="VehicleArrivalTime" class="form-control" readonly="@(true)" />
+                        <span asp-validation-for="VehicleArrivalTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="VehicleDepartureTime" class="control-label"></label>
+                        <input asp-for="VehicleDepartureTime" class="form-control" readonly="@(true)" />
+                        <span asp-validation-for="VehicleDepartureTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="VehicleParkDuration" class="control-label"></label>
+                        <input asp-for="VehicleParkDuration" class="form-control" readonly="@(true)" />
+                        <span asp-validation-for="VehicleParkDuration" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Print" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Overview">To the overview</a>
+        </div>
+    </main>
+    @*section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }*@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
