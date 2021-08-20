@@ -24,6 +24,36 @@ namespace Garage2._0.Controllers
         {
             return View(await _context.Vehicle.ToListAsync());
         }
+        // Search for Vehicle
+        public async Task<IActionResult> Search(string searchText)
+        {
+            var exists =  _context.Vehicle.Any(v => v.RegistrationNumber == searchText);
+
+            if (exists)
+            {
+                var model = await _context.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber == searchText);
+
+                if (model.IsParked)
+                {
+                    // Visa parkerat fordon
+                    return RedirectToAction("Details", new { id = model.Id });
+
+                }
+                else
+                {
+                    // Gå till en vy där man kan parkera
+                    return RedirectToAction("Details", new { id = model.Id });
+                }
+            }
+            else
+            {
+                // Fordonet finns inte
+                return View(nameof(Park));
+            }
+
+
+        }
+
 
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)

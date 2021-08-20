@@ -31,7 +31,7 @@ namespace Garage2._0.Models
         public int NumberOfWheels { get; set; }
 
         public bool IsParked { get; set; }
-
+        
         public DateTime TimeOfArrival { get; set; }
     }
 }
