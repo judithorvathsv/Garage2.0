@@ -52,7 +52,7 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Overview()
         {
-            var model =  _context.Vehicle.Select(o => new OverviewViewModel
+            var model =  db.Vehicle.Select(o => new OverviewViewModel
             {
                 VehicleId = o.Id,
                 VehicleType = o.VehicleType,
