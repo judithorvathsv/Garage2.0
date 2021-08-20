@@ -167,7 +167,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Details", new { id = vehicle.Id });
+            return RedirectToAction("Receipt");
         }
 
         public async Task<IActionResult> Change(int? Id)
