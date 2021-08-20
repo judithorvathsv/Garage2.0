@@ -74,12 +74,16 @@ namespace Garage2._0.Controllers
 
             if (ModelState.IsValid)
             {
-         
                 db.Add(model);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Response), model);
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Response(Vehicle vehicle)
+        {
+            return View(vehicle);
         }
 
         // GET: Vehicles/Edit/5
