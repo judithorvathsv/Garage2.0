@@ -117,11 +117,8 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-            return View(vehicle);
-        
+            return View(vehicle);        
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -157,9 +154,20 @@ namespace Garage2._0.Controllers
         }
 
 
+        public async Task<IActionResult> Filter(string registrationNumber)
+        {
+            var model = string.IsNullOrWhiteSpace(registrationNumber) ?
+                            db.Vehicle :
+                            db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
+            return View(nameof(Index), await model.ToListAsync());        
+        }
 
 
-
+        public async Task<IActionResult> Order()
+        {
+            var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);
+            return View(nameof(Index), await model.ToListAsync());
+        }
 
 
         // GET: Vehicles/Edit/5
@@ -177,9 +185,6 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
-        
-
-
 
         
         // POST: Vehicles/Edit/5
