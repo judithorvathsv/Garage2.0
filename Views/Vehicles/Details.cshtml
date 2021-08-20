@@ -68,11 +68,11 @@
 <div>
     @if (Model.IsParked == true)
     {
-        <a class="btn btn-dark" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
+        <a class="btn btn-primary" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
     }
     else
     {
-        <a class="btn btn-dark" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
+        <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
     }
 </div>
     <br/>
