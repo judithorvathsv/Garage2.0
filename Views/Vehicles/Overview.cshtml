@@ -1,42 +1,40 @@
 ﻿@model IEnumerable<OverviewViewModel>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-    <table class="table">
-        <thead>
+@{
+    ViewData["Title"] = "Overview";
+}
+<h1>Garage Overview</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.VehicleType)</th>
+            <th>@Html.DisplayNameFor(model => model.VehicleRegistrationNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.VehicleArrivalTime)</th>
+            <th>@Html.DisplayNameFor(model => model.VehicleParkDuration)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>@Html.DisplayNameFor(model => model.VehicleType)</th>
-                <th>@Html.DisplayNameFor(model => model.VehicleRegistrationNumber)</th>
-                <th>@Html.DisplayNameFor(model => model.VehicleArrivalTime)</th>
-                <th>@Html.DisplayNameFor(model => model.VehicleParkDuration)</th>
-                <th></th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleArrivalTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleParkDuration)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VehicleType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VehicleArrivalTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VehicleParkDuration)
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
+        }
+    </tbody>
+</table>
