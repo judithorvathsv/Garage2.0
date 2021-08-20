@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 namespace Garage2._0.Models
 {
     public enum VehicleTypes
-    {
-        Car,
-        Truck,
-        Bus,
-        Tractor,
-        Motorcycle,
-        Bicycle,
-        Tricycle,
-        Tank,     
-        Boat,     
-        Airplane
+    {      
+       
+        Bicycle=1,       
+        Boat =2,
+        Bus =3,
+        Car =4,
+        Motorcycle=5,
+        Tank=6,
+        Tractor=7,
+        Tricycle=8,
+        Truck = 9,
+        Airplane = 0,
     }
 }

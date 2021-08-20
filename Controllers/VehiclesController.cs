@@ -199,8 +199,15 @@ namespace Garage2._0.Controllers
             var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);           
             return View(nameof(Index), await model.ToListAsync());
             }
+
             if (id == 2){
-                var model = db.Vehicle.OrderBy(o => o.VehicleType);
+
+
+         
+
+
+
+                 var model = db.Vehicle.OrderBy(o => o.VehicleType);
                 return View(nameof(Index), await model.ToListAsync());
             }
             if (id == 3)
