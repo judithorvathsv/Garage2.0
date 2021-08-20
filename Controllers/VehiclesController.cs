@@ -322,5 +322,10 @@ namespace Garage2._0.Controllers
         {
             return db.Vehicle.Any(e => e.Id == id);
         }
+
+        public IActionResult Receipt()
+        {
+            return View();
+        }
     }
 }
