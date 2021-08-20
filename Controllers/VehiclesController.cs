@@ -26,6 +26,7 @@ namespace Garage2._0.Controllers
             return View(await db.Vehicle.ToListAsync());
         }
 
+
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,7 +43,13 @@ namespace Garage2._0.Controllers
             }
 
             return View(vehicle);
+  
         }
+
+
+
+
+
 
         // GET: Vehicles/Create
         public IActionResult Park()
@@ -100,7 +107,6 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Change(int? Id)
         {         
-     
              if (Id == null)
             {
                 return NotFound();
@@ -112,11 +118,10 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-              
-            return View(vehicle);        
+             return View(vehicle);
         }
 
-        
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -146,9 +151,9 @@ namespace Garage2._0.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Overview));
             }
-            return View(vehicle);
+            return View(vehicle);         
         }
 
 
