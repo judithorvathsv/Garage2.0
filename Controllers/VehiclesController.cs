@@ -51,10 +51,7 @@ namespace Garage2._0.Controllers
                 // Fordonet finns inte
                 return View(nameof(Park));
             }
-
-
         }
-
 
 
         // GET: Vehicles/Details/5
@@ -75,6 +72,11 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
+
+
+
+
+
         // GET: Vehicles/Create
         public IActionResult Park()
         {
@@ -93,6 +95,12 @@ namespace Garage2._0.Controllers
             });
             
             return View(await model.ToListAsync());
+        }
+
+        // GET: Vehicles/Create
+        public IActionResult Park()
+        {
+            return View();
         }
 
         // POST: Vehicles/Create
@@ -115,18 +123,63 @@ namespace Garage2._0.Controllers
             };
 
             if (ModelState.IsValid)
-            {
+            {         
                 db.Add(model);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Response), model);
+                await db.SaveChangesAsync();           
+                return RedirectToAction("Details", new { id = model.Id });
             }
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult>ParkRegisteredVehicle(int? id)
+        {
+            var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
+            vehicle.IsParked = true;
 
+            try
+            {
+                db.Update(vehicle);
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
 
+                if (vehicle.Id != id)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Details", new { id = vehicle.Id });
+        }
+        [HttpGet]
+        public async Task<IActionResult> UnPark(int? id)
+        {
+            var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
+            vehicle.IsParked = false;
 
+            try
+            {
+                db.Update(vehicle);
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
 
-
+                if (vehicle.Id != id)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Details", new { id = vehicle.Id });
+        }
 
         public async Task<IActionResult> Change(int? Id)
         {         
@@ -148,7 +201,7 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {                     
-               if (Id != vehicle.Id)
+            if (Id != vehicle.Id)
             {
                 return NotFound();
             }
@@ -194,11 +247,6 @@ namespace Garage2._0.Controllers
         }
 
 
-        public async Task<IActionResult> Response(Vehicle vehicle)
-        {
-            return View(vehicle);
-        }
-
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -215,6 +263,7 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
+        
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -249,6 +298,11 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
+        
+
+
+
+
 
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
