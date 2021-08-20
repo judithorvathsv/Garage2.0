@@ -28,11 +28,11 @@ namespace Garage2._0.Controllers
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
-            var exists =  _context.Vehicle.Any(v => v.RegistrationNumber == searchText);
+            var exists =  db.Vehicle.Any(v => v.RegistrationNumber == searchText);
 
             if (exists)
             {
-                var model = await _context.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber == searchText);
+                var model = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber == searchText);
 
                 if (model.IsParked)
                 {
