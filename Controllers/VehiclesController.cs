@@ -163,11 +163,51 @@ namespace Garage2._0.Controllers
         }
 
 
-        public async Task<IActionResult> Order()
+        public async Task<IActionResult> Order(int id)
         {
-            var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);
+            if (id == 1) { 
+            var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);           
             return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 2){
+                var model = db.Vehicle.OrderBy(o => o.VehicleType);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 3)
+            {
+                var model = db.Vehicle.OrderBy(o => o.Color);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 4)
+            {
+                var model = db.Vehicle.OrderBy(o => o.Brand);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 5)
+            {
+                var model = db.Vehicle.OrderBy(o => o.VehicleModel);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 6)
+            {
+                var model = db.Vehicle.OrderBy(o => o.NumberOfWheels);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 7)
+            {
+                var model = db.Vehicle.OrderBy(o => o.IsParked);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+            if (id == 8)
+            {
+                var model = db.Vehicle.OrderBy(o => o.TimeOfArrival);
+                return View(nameof(Index), await model.ToListAsync());
+            }
+
+            return View(nameof(Index));
         }
+
+
 
 
         // GET: Vehicles/Edit/5

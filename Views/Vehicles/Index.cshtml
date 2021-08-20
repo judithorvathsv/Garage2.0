@@ -9,8 +9,7 @@
 <form asp-action="Filter">
     <div class="input-group">
         <input type="text" class="form-control" name="registrationNumber" placeholder="Search on registration number..." />
-        <button type="submit" class="btn btn-primary">&#128269;Search</button>
-      
+        <button type="submit" class="btn btn-primary">&#128269;Search</button>      
     </div>
 </form>
 
@@ -19,28 +18,51 @@
     <thead>
         <tr>
             <th>
-
+                <form asp-action="Order" asp-route-id="1">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.RegistrationNumber)
             </th>
             <th>
+                <form asp-action="Order" asp-route-id="2">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.VehicleType)
             </th>
             <th>
+                <form asp-action="Order" asp-route-id="3">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
+                <form asp-action="Order"  asp-route-id="4">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.Brand)
             </th>
             <th>
+                <form asp-action="Order" asp-route-id="5">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.VehicleModel)
             </th>
             <th>
+                <form asp-action="Order"  asp-route-id="6">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.NumberOfWheels)
             </th>
             <th>
+                <form asp-action="Order" asp-route-id="7">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.IsParked)
             </th>
             <th>
+                <form asp-action="Order" asp-route-id="8">
+                    <button type="submit" class="btn btn-primary">&darr;</button>
+                </form>
                 @Html.DisplayNameFor(model => model.TimeOfArrival)
             </th>
             <th>  <form asp-action="Park">
