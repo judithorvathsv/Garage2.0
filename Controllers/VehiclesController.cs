@@ -91,11 +91,10 @@ namespace Garage2._0.Controllers
             };
 
             if (ModelState.IsValid)
-            {
-         
+            {         
                 db.Add(model);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await db.SaveChangesAsync();           
+                return RedirectToAction("Details", new { id = model.Id });
             }
             return View(model);
         }
@@ -118,7 +117,8 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-             return View(vehicle);
+            return View(vehicle);
+        
         }
 
 
@@ -150,10 +150,10 @@ namespace Garage2._0.Controllers
                     {
                         throw;
                     }
-                }
-                return RedirectToAction(nameof(Overview));
+                }         
+                return RedirectToAction("Details", new { id = vehicle.Id });
             }
-            return View(vehicle);         
+            return View(vehicle);    
         }
 
 
