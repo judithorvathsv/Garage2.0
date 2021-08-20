@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
+using Garage2._0.Models.ViewModels;
 
 namespace Garage2._0.Controllers
 {
@@ -49,6 +50,19 @@ namespace Garage2._0.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Overview()
+        {
+            var model =  _context.Vehicle.Select(o => new OverviewViewModel
+            {
+                VehicleId = o.Id,
+                VehicleType = o.VehicleType,
+                VehicleRegistrationNumber = o.RegistrationNumber,
+                VehicleArrivalTime = o.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - o.TimeOfArrival
+            });
+            
+            return View(await model.ToListAsync());
+        }
 
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
