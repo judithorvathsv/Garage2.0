@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
+using Garage2._0.Models.ViewModels;
 
 namespace Garage2._0.Controllers
 {
@@ -24,6 +25,37 @@ namespace Garage2._0.Controllers
         {
             return View(await db.Vehicle.ToListAsync());
         }
+        // Search for Vehicle
+        public async Task<IActionResult> Search(string searchText)
+        {
+            var exists =  db.Vehicle.Any(v => v.RegistrationNumber == searchText);
+
+            if (exists)
+            {
+                var model = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber == searchText);
+
+                if (model.IsParked)
+                {
+                    // Visa parkerat fordon
+                    return RedirectToAction("Details", new { id = model.Id });
+
+                }
+                else
+                {
+                    // Gå till en vy där man kan parkera
+                    return RedirectToAction("Details", new { id = model.Id });
+                }
+            }
+            else
+            {
+                // Fordonet finns inte
+                return View(nameof(Park));
+            }
+
+
+        }
+
+
 
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -49,9 +81,19 @@ namespace Garage2._0.Controllers
             return View();
         }
 
-
-
-
+        public async Task<IActionResult> Overview()
+        {
+            var model =  db.Vehicle.Select(o => new OverviewViewModel
+            {
+                VehicleId = o.Id,
+                VehicleType = o.VehicleType,
+                VehicleRegistrationNumber = o.RegistrationNumber,
+                VehicleArrivalTime = o.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - o.TimeOfArrival
+            });
+            
+            return View(await model.ToListAsync());
+        }
 
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -80,6 +122,77 @@ namespace Garage2._0.Controllers
             }
             return View(model);
         }
+
+
+
+
+
+
+        public async Task<IActionResult> Change(int? Id)
+        {         
+             if (Id == null)
+            {
+                return NotFound();
+            }
+
+             var vehicle = await db.Vehicle.FindAsync(Id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            return View(vehicle);        
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
+        {                     
+               if (Id != vehicle.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    db.Update(vehicle);
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    if (!VehicleExists(vehicle.Id))                  
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }         
+                return RedirectToAction("Details", new { id = vehicle.Id });
+            }
+            return View(vehicle);    
+        }
+
+
+        public async Task<IActionResult> Filter(string registrationNumber)
+        {
+            var model = string.IsNullOrWhiteSpace(registrationNumber) ?
+                            db.Vehicle :
+                            db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
+            return View(nameof(Index), await model.ToListAsync());        
+        }
+
+
+        public async Task<IActionResult> Order()
+        {
+            var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);
+            return View(nameof(Index), await model.ToListAsync());
+        }
+
 
         public async Task<IActionResult> Response(Vehicle vehicle)
         {
