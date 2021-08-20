@@ -15,6 +15,8 @@ namespace Garage2._0.Models.ViewModels
         public string VehicleRegistrationNumber { get; set; }
         [Display(Name = "Arrival Time")]
         public DateTime VehicleArrivalTime { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:%d} day(s) {0:hh'h 'mm'm 'ss's'}", ApplyFormatInEditMode = true)]
         [Display(Name = "Duration Parked")]
         public TimeSpan VehicleParkDuration { get; set; }
     }
