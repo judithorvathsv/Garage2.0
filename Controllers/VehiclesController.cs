@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
 using Garage2._0.Models.ViewModels;
+using System.Data.Entity.Validation;
 
 namespace Garage2._0.Controllers
 {
@@ -118,9 +119,29 @@ namespace Garage2._0.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    db.Add(model);
-                    await db.SaveChangesAsync();
-                    return RedirectToAction("Details", new { id = model.Id });
+                    try
+                    {
+                        db.Add(model);
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("Details", new { id = model.Id });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.GetType() == typeof(DbEntityValidationException))
+                        {
+                            //Exception thrown from System.Data.Entity.DbContext.SaveChanges when validating entities fails.
+                        }
+                        else
+                        if (ex.GetType() == typeof(DbUnexpectedValidationException))
+                        {
+                            //Exception thrown from System.Data.Entity.DbContext.GetValidationErrors when an
+                            //exception is thrown from the validation code.
+                        }
+                        else
+                        {
+                            //All remaining exception here 
+                        }
+                    }
                 }
                 return View(model);
             }
