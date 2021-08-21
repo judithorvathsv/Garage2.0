@@ -73,16 +73,6 @@ namespace Garage2._0.Controllers
         }
 
 
-
-
-
-
-        // GET: Vehicles/Create
-        public IActionResult Park()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> Overview()
         {
             var model =  db.Vehicle.Select(o => new OverviewViewModel
@@ -110,25 +100,37 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
-            var model = new Vehicle
+            bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
+ 
+            if (!registeredvehicle)
             {
-                RegistrationNumber = vehicle.RegistrationNumber,
-                VehicleType = vehicle.VehicleType,
-                Brand = vehicle.Brand,
-                Color = vehicle.Color,
-                VehicleModel = vehicle.VehicleModel,
-                NumberOfWheels = vehicle.NumberOfWheels,
-                IsParked = true,
-                TimeOfArrival = DateTime.Now
-            };
+                var model = new Vehicle
+                {
+                    RegistrationNumber = vehicle.RegistrationNumber,
+                    VehicleType = vehicle.VehicleType,
+                    Brand = vehicle.Brand,
+                    Color = vehicle.Color,
+                    VehicleModel = vehicle.VehicleModel,
+                    NumberOfWheels = vehicle.NumberOfWheels,
+                    IsParked = true,
+                    TimeOfArrival = DateTime.Now
+                };
 
-            if (ModelState.IsValid)
-            {         
-                db.Add(model);
-                await db.SaveChangesAsync();           
-                return RedirectToAction("Details", new { id = model.Id });
+                if (ModelState.IsValid)
+                {
+                    db.Add(model);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Details", new { id = model.Id });
+                }
+                return View(model);
             }
-            return View(model);
+            else
+            {
+                var existingvehicle = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber.Contains(vehicle.RegistrationNumber));
+                TempData["Message"] = "Your vehicle is alredy registred!";
+                return RedirectToAction("Details", new { id = existingvehicle.Id });
+            }
+    
         }
         [HttpGet]
         public async Task<IActionResult>ParkRegisteredVehicle(int? id)
