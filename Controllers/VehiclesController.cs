@@ -49,6 +49,7 @@ namespace Garage2._0.Controllers
             }
             else
             {
+                TempData["Regnumber"] = searchText;
                 // Fordonet finns inte
                 return View(nameof(Park));
             }
@@ -108,7 +109,10 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
             bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
- 
+
+            string str = vehicle.Color;
+            vehicle.Color = FirstLetterToUpper(str);
+
             if (!registeredvehicle)
             {
                 var model = new Vehicle
@@ -271,6 +275,12 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
+            //Make the first letter to upper charcter;
+
+            string str = vehicle.Color;
+            vehicle.Color = FirstLetterToUpper(str);
+            //str = char.ToUpper(str[0]) + str.Substring(1);
+            //vehicle.Color = str;
 
             if (ModelState.IsValid)
             {
@@ -294,6 +304,17 @@ namespace Garage2._0.Controllers
                 return RedirectToAction("ResponsePark", new { id = vehicle.Id });
             }
             return View(vehicle);    
+        }
+
+        private string FirstLetterToUpper(string str)
+        {
+            if (str == null)
+                return null;
+
+            if (str.Length > 1)
+                return char.ToUpper(str[0]) + str.Substring(1);
+
+            return str.ToUpper();
         }
 
 
