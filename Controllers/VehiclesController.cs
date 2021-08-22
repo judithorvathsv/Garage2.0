@@ -38,13 +38,13 @@ namespace Garage2._0.Controllers
                 if (model.IsParked)
                 {
                     // Visa parkerat fordon
-                    return RedirectToAction("Details", new { id = model.Id });
+                    return RedirectToAction("ResponsePark", new { id = model.Id });
 
                 }
                 else
                 {
                     // Gå till en vy där man kan parkera
-                    return RedirectToAction("Details", new { id = model.Id });
+                    return RedirectToAction("ResponsePark", new { id = model.Id });
                 }
             }
             else
@@ -72,7 +72,13 @@ namespace Garage2._0.Controllers
 
             return View(vehicle);
         }
+        public async Task<PartialViewResult> ParkDetails(int? id)
+        {
+            var vehicle = await db.Vehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
 
+            return PartialView(vehicle);
+        }
 
         public async Task<IActionResult> Overview()
         {
@@ -123,7 +129,8 @@ namespace Garage2._0.Controllers
                     {
                         db.Add(model);
                         await db.SaveChangesAsync();
-                        return RedirectToAction("Details", new { id = model.Id });
+                        TempData["Message"] = "";
+                        return RedirectToAction("ResponsePark", new { id = model.Id });
                     }
                     catch (Exception ex)
                     {
@@ -149,15 +156,34 @@ namespace Garage2._0.Controllers
             {
                 var existingvehicle = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber.Contains(vehicle.RegistrationNumber));
                 TempData["Message"] = "Your vehicle is alredy registred!";
-                return RedirectToAction("Details", new { id = existingvehicle.Id });
+                return RedirectToAction("ResponsePark", new { id = existingvehicle.Id });
             }
     
         }
+
+        public async Task<IActionResult> ResponsePark(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await db.Vehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicle);
+        }
+
         [HttpGet]
         public async Task<IActionResult>ParkRegisteredVehicle(int? id)
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
+            vehicle.TimeOfArrival = DateTime.Now;
 
             try
             {
@@ -176,7 +202,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Details", new { id = vehicle.Id });
+            return RedirectToAction("ResponsePark", new { id = vehicle.Id });
         }
         [HttpGet]
         public async Task<IActionResult> UnPark(int? id)
@@ -217,7 +243,24 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-            return View(vehicle);        
+            return PartialView(nameof(ParkChange),vehicle);        
+        }
+
+
+        public async Task<IActionResult> ParkChange(int? Id)
+        {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await db.Vehicle.FindAsync(Id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            return PartialView(vehicle);
         }
 
         [HttpPost]
@@ -248,7 +291,7 @@ namespace Garage2._0.Controllers
                         throw;
                     }
                 }         
-                return RedirectToAction("Details", new { id = vehicle.Id });
+                return RedirectToAction("ResponsePark", new { id = vehicle.Id });
             }
             return View(vehicle);    
         }

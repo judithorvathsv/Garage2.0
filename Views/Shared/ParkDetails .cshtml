@@ -1,16 +1,6 @@
 ﻿@model Vehicle
 
-@{
-    ViewData["Title"] = "Response";
-}
-
-<h4>Your vehicle is now parked!</h4>
-<p>Check the information below and change it if you need.</p>
-<hr />
-<h1>Details</h1>
-
 <div>
-    <h4>Vehicle</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -50,6 +40,12 @@
             @Html.DisplayFor(model => model.NumberOfWheels)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsParked)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsParked)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TimeOfArrival)
         </dt>
         <dd class="col-sm-10">
@@ -57,6 +53,5 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Change" asp-route-id="@Model.Id">Change</a>
-</div>
+<p class="text-danger">@TempData["Message"]</p>
+

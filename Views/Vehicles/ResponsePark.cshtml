@@ -1,0 +1,75 @@
+﻿@model Garage2._0.Models.Vehicle
+
+<h1>Parking information</h1>
+
+<div>
+    @if (Model.IsParked == true)
+    {
+        <h5>Your Car is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
+        <p>If all information is correct you are finished otherwise you can change it.</p>
+    }
+</div>
+<div>
+    @if (Model.IsParked == true)
+    {
+        <a class="btn btn-dark" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
+    }
+    else
+    {
+        <a class="btn btn-dark" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
+    }
+    <button class="btn btn-primary" id="btnDetail" disabled>Detail</button>
+    <button class="btn btn-primary" id="btnChange">Change</button>
+</div>
+
+<input id="vehicleid" type="hidden" value="@Model.Id" />
+
+<div id="PartialDetail"><partial name="ParkDetails" model="@Model" /></div>
+<div id="PartialChange"></div>
+<div id="errormessage"></div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script type="text/javascript">
+        $(function () {
+            var vehicleid = $("#vehicleid").val();
+            console.log(vehicleid);
+
+            $("#btnChange").on("click", function () {
+                $.get("@Url.Action("ParkChange", "Vehicles")", { 'id': vehicleid },
+                    function (data, status, xhr) {
+                        $("#PartialDetail").hide();
+                        $("#PartialChange").empty();
+                        $("#PartialChange").html(data);
+                        $("#btnChange").attr("disabled", "disabled");
+                        $("#btnDetail").removeAttr("disabled");
+                        if (status == 'error') {
+                            $("errormessage").text("An error occurred while loading the results.");
+                        }
+                });
+            });
+            $("#btnDetail").on("click", function () {
+                $.get("@Url.Action("ParkDetail", "Vehicles")", { 'id': vehicleid },
+                    function (data, status, xhr) {
+                        // $("#PartialDetail").empty();
+                        $("#PartialChange").hide();
+                        $("#PartialDetail").empty();
+                        $("#PartialDetail").html(data);
+                        $("#btnDetail").attr("disabled", "disabled");
+                        $("#btnChange").removeAttr("disabled");
+                        if (status == 'error') {
+                            $("errormessage").text("An error occurred while loading the results.");
+                        }
+                });
+            });
+        });
+
+
+
+
+
+
+
+</script>

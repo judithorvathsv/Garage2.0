@@ -1,85 +1,56 @@
 ﻿@model Garage2._0.Models.Vehicle
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "_LayoutOverview";
-}
-
-<h1>Details</h1>
-
 <div>
-
-    @if (Model.IsParked == true)
-    {
-        <h5>Your Car is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
-        <p>If all information is correct you are finished otherwise you can change it.</p>
-    }
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.VehicleType)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.VehicleType)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.RegistrationNumber)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.RegistrationNumber)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Color)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Color)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Brand)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Brand)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.VehicleModel)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.VehicleModel)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NumberOfWheels)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.NumberOfWheels)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsParked)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IsParked)
         </dd>
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TimeOfArrival)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TimeOfArrival)
         </dd>
     </dl>
 </div>
 <p class="text-danger">@TempData["Message"]</p>
-<div>
-    @if (Model.IsParked == true)
-    {
-        <a class="btn btn-primary" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
-    }
-    else
-    {
-        <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
-    }
-</div>
-
-<br />
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Change</a> |
-    <a asp-action="Overview">Back to Overview</a>
-</div>
