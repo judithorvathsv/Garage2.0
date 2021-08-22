@@ -20,13 +20,14 @@
     }
     <button class="btn btn-primary" id="btnDetail" disabled>Detail</button>
     <button class="btn btn-primary" id="btnChange">Change</button>
+    <br/>
 </div>
 
-<input id="vehicleid" type="hidden" value="@Model.Id" />
+    <input id="vehicleid" type="hidden" value="@Model.Id" />
 
-<div id="PartialDetail"><partial name="ParkDetails" model="@Model" /></div>
-<div id="PartialChange"></div>
-<div id="errormessage"></div>
+    <div id="PartialDetail"><partial name="_ParkDetails" model="@Model" /></div>
+    <div id="PartialChange"></div>
+    <div id="errormessage"></div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,10 +39,10 @@
             console.log(vehicleid);
 
             $("#btnChange").on("click", function () {
-                $.get("@Url.Action("ParkChange", "Vehicles")", { 'id': vehicleid },
+                $.get("@Url.Action("_ParkChange", "Vehicles")", { 'id': vehicleid },
                     function (data, status, xhr) {
                         $("#PartialDetail").hide();
-                        $("#PartialChange").empty();
+                        $("#PartialChange").show();
                         $("#PartialChange").html(data);
                         $("#btnChange").attr("disabled", "disabled");
                         $("#btnDetail").removeAttr("disabled");
@@ -51,11 +52,10 @@
                 });
             });
             $("#btnDetail").on("click", function () {
-                $.get("@Url.Action("ParkDetail", "Vehicles")", { 'id': vehicleid },
+                $.get("@Url.Action("_ParkDetails", "Vehicles")", { 'id': vehicleid },
                     function (data, status, xhr) {
-                        // $("#PartialDetail").empty();
                         $("#PartialChange").hide();
-                        $("#PartialDetail").empty();
+                        $("#PartialDetail").show();
                         $("#PartialDetail").html(data);
                         $("#btnDetail").attr("disabled", "disabled");
                         $("#btnChange").removeAttr("disabled");

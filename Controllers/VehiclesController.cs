@@ -72,7 +72,7 @@ namespace Garage2._0.Controllers
 
             return View(vehicle);
         }
-        public async Task<PartialViewResult> ParkDetails(int? id)
+        public async Task<PartialViewResult> _ParkDetails(int? id)
         {
             var vehicle = await db.Vehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -243,11 +243,11 @@ namespace Garage2._0.Controllers
             {
                 return NotFound();
             }
-            return PartialView(nameof(ParkChange),vehicle);        
+            return PartialView(nameof(_ParkChange),vehicle);        
         }
 
 
-        public async Task<IActionResult> ParkChange(int? Id)
+        public async Task<IActionResult> _ParkChange(int? Id)
         {
             if (Id == null)
             {
@@ -364,10 +364,6 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
-        
-
-
-
 
 
         // GET: Vehicles/Delete/5
