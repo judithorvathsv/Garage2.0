@@ -11,73 +11,31 @@
 
 
 <table class="table">
-    <thead>
+    <thead>       
         <tr>
-            <th>
-                <form asp-action="Order" asp-route-id="1">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+            <th>   
+                <a asp-action="Index" asp-route-id="1" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.RegistrationNumber)</a>                
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="2">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="2" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.VehicleType)</a>           
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="3">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="3" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.Color)</a>            
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="4">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="4" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.Brand)</a>        
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="5">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="5" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.VehicleModel)</a>         
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="6">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="6" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.NumberOfWheels)</a>              
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="7">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
+                <a asp-action="Index" asp-route-id="7" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.IsParked)</a>              
             </th>
             <th>
-                <form asp-action="Order" asp-route-id="8">
-                    <button type="submit" class="btn btn-primary orderButton">&darr;</button>
-                </form>
-            </th>
-        </tr>
-        <tr>
-            <th>               
-                @Html.DisplayNameFor(model => model.RegistrationNumber)
-            </th>
-            <th>             
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>              
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>                
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>              
-                @Html.DisplayNameFor(model => model.VehicleModel)
-            </th>
-            <th>               
-                @Html.DisplayNameFor(model => model.NumberOfWheels)
-            </th>
-            <th>               
-                @Html.DisplayNameFor(model => model.IsParked)
-            </th>
-            <th>               
-                @Html.DisplayNameFor(model => model.TimeOfArrival)
+                <a asp-action="Index" asp-route-id="8" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.TimeOfArrival)</a>      
             </th>
             <th>
                 <form asp-action="Park">
