@@ -51,7 +51,7 @@ namespace Garage2._0
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Vehicles}/{action=Park}/{id?}");
+                    pattern: "{controller=Vehicles}/{action=Index}");
             });
         }
     }
