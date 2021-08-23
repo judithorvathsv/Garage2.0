@@ -91,7 +91,10 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
-
+        public IActionResult Index1()
+        {
+            return View();
+        }
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

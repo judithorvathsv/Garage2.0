@@ -1,0 +1,12 @@
+﻿@model Garage2._0.Models.Vehicle
+@inject Garage2._0.Services.IVehicleTypeSelectListService service
+
+@{
+    ViewData["Title"] = "UnParkResponse";
+}
+
+<h1>You have now unparked your vehicle successfully! Do you want a receipt?</h1>
+
+<div>
+    <a asp-action="Overview">Back to Overview</a>
+</div>

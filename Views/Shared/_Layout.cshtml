@@ -30,16 +30,7 @@
         </nav>
     </header>
     <div class="container">
-        <div>
-            <form asp-controller="Vehicles" asp-action="Search">
-                <div class="input-group mb-3">
-                    <input class="form-control" type="text" name="searchText" placeholder="Search for vehicle" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-info" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
