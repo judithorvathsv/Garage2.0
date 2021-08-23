@@ -74,3 +74,8 @@ body {
     max-height:30px;
 }
 
+@media print {
+    .noprint {
+        visibility: hidden;
+    }
+}

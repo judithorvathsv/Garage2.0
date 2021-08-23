@@ -119,11 +119,13 @@ namespace Garage2._0.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult>ParkRegisteredVehicle(int? id)
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
+            vehicle.TimeOfArrival = DateTime.Now;
 
             try
             {
@@ -167,7 +169,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Receipt");
+            return RedirectToAction("Receipt", new { id = vehicle.Id });
         }
 
         public async Task<IActionResult> Change(int? Id)
@@ -236,13 +238,8 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());
             }
 
-            if (id == 2){
-
-
-         
-
-
-
+            if (id == 2)
+            {
                  var model = db.Vehicle.OrderBy(o => o.VehicleType);
                 return View(nameof(Index), await model.ToListAsync());
             }
@@ -370,9 +367,20 @@ namespace Garage2._0.Controllers
             return db.Vehicle.Any(e => e.Id == id);
         }
 
-        public IActionResult Receipt()
+        public async Task<IActionResult> Receipt(int id)
         {
-            return View();
+            var vehicle = await db.Vehicle.FindAsync(id);
+
+            var model = new ReceiptViewModel
+            {
+                VehicleRegistrationNumber = vehicle.RegistrationNumber,
+                VehicleArrivalTime = vehicle.TimeOfArrival,
+                VehicleDepartureTime = DateTime.Now,
+                VehicleParkDuration = vehicle.TimeOfArrival - DateTime.Now,
+                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+            };
+
+            return View(model);
         }
     }
 }
