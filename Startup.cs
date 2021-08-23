@@ -24,8 +24,6 @@ namespace Garage2._0
         {
             services.AddControllersWithViews();
 
-            services.AddScoped<IVehicleTypeSelectListService, VehicleTypeSelectListService>();
-
             services.AddDbContext<Garage2_0Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage2_0Context")));
         }
