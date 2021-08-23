@@ -291,23 +291,6 @@ namespace Garage2._0.Controllers
             return View(model);
         }
 
-
-        // GET: Vehicles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await db.Vehicle.FindAsync(id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-            return View(vehicle);
-        }
-
         
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
