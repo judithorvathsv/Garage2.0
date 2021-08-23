@@ -20,11 +20,7 @@ namespace Garage2._0.Controllers
             db = context;
         }
 
-        // GET: Vehicles
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Vehicle.ToListAsync());
-        }
+ 
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
@@ -91,7 +87,10 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -119,11 +118,13 @@ namespace Garage2._0.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult>ParkRegisteredVehicle(int? id)
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
+            vehicle.TimeOfArrival = DateTime.Now;
 
             try
             {
@@ -149,6 +150,7 @@ namespace Garage2._0.Controllers
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = false;
+            var departureTime = DateTime.Now;
 
             try
             {
@@ -167,7 +169,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Receipt");
+            return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
         }
 
         public async Task<IActionResult> Change(int? Id)
@@ -228,10 +230,116 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());        
         }
 
-       
+        
+         [HttpGet]
+            public async Task<IActionResult> Index(int id, string sortingVehicle)    
+         {                
+                 ViewData["VehicleParameterForSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "ParameterForSorting" : "";
+                 var model = from x in db.Vehicle select x;
+
+             if (id == 1)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.RegistrationNumber);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.RegistrationNumber);
+                         break;
+                 }
+             }
+             if (id == 2)
+             {    
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.VehicleType);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.VehicleType);
+                         break;
+                 }
+             }
+
+             if (id == 3)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.Color);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.Color);
+                         break;
+                 }
+             }
+
+             if (id == 4)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.Brand);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.Brand);
+                         break;
+                 }
+             }
+             if (id == 5)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.VehicleModel);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.VehicleModel);
+                         break;
+                 }
+             }
+             if (id == 6)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.NumberOfWheels);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.NumberOfWheels);
+                         break;
+                 }
+             }
+             if (id == 7)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.IsParked);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.IsParked);
+                         break;
+                 }
+             }
+             if (id == 8)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.TimeOfArrival);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.TimeOfArrival);
+                         break;
+                 }
+             }     
+             return View(await model.AsNoTracking().ToListAsync());
+     }       
+        
 
 
-   
 
 
         [HttpGet]
@@ -291,23 +399,6 @@ namespace Garage2._0.Controllers
             }).ToListAsync();
 
             return View(model);
-        }
-
-
-        // GET: Vehicles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await db.Vehicle.FindAsync(id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-            return View(vehicle);
         }
 
         
@@ -381,9 +472,20 @@ namespace Garage2._0.Controllers
             return db.Vehicle.Any(e => e.Id == id);
         }
 
-        public IActionResult Receipt()
+        public async Task<IActionResult> Receipt(int id, DateTime departureTime)
         {
-            return View();
+            var vehicle = await db.Vehicle.FindAsync(id);
+
+            var model = new ReceiptViewModel
+            {
+                VehicleRegistrationNumber = vehicle.RegistrationNumber,
+                VehicleArrivalTime = vehicle.TimeOfArrival,
+                VehicleDepartureTime = departureTime, 
+                VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
+                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+            };
+
+            return View(model);
         }
     }
 }

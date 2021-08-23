@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
-using Garage2._0.Services;
 
 namespace Garage2._0
 {
@@ -23,8 +22,6 @@ namespace Garage2._0
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            services.AddScoped<IVehicleTypeSelectListService, VehicleTypeSelectListService>();
 
             services.AddDbContext<Garage2_0Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage2_0Context")));
@@ -54,7 +51,7 @@ namespace Garage2._0
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Vehicles}/{action=Park}/{id?}");
+                    pattern: "{controller=Vehicles}/{action=Index}");
             });
         }
     }
