@@ -44,7 +44,7 @@
                         $("#PartialDetail").hide();
                         $("#PartialChange").show();
                         $("#PartialChange").html(data);
-                        $("#btnChange").attr("disabled", "disabled");
+                        $("#btnChange").hide();
                         $("#btnDetail").removeAttr("disabled");
                         if (status == 'error') {
                             $("errormessage").text("An error occurred while loading the results.");
