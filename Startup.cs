@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
-using Garage2._0.Services;
 
 namespace Garage2._0
 {
