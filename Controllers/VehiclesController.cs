@@ -45,6 +45,7 @@ namespace Garage2._0.Controllers
             else
             {
                 // Fordonet finns inte
+                ViewBag.RegNr = searchText.ToUpper();
                 return View(nameof(Park));
             }
         }
@@ -87,6 +88,8 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
+
+        //Start page where search on reg nr is done
         public IActionResult Index()
         {
             return View();

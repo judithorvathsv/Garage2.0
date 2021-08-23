@@ -15,7 +15,7 @@
 
             <div class="form-group">
                 <label asp-for="RegistrationNumber" class="control-label"></label>
-                <input asp-for="RegistrationNumber" class="form-control" />
+                <input asp-for="RegistrationNumber" class="form-control" value= "@ViewBag.RegNr" />
                 <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
             </div>
 
