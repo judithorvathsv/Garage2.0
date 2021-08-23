@@ -66,7 +66,7 @@
     </dl>
 </div>
 <p class="text-danger">@TempData["Message"]</p>
-<div>
+<div class="form-group">
     @if (Model.IsParked == true)
     {
         <a class="btn btn-primary" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
@@ -75,10 +75,5 @@
     {
         <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
     }
-</div>
-
-<br />
-<div>
-    <a asp-action="Change" asp-route-id="@Model.Id">Change</a> |
-    <a asp-action="Overview">Back to Overview</a>
+    <a class="btn btn-secondary" asp-action="Change" asp-route-id="@Model.Id">Change</a>
 </div>

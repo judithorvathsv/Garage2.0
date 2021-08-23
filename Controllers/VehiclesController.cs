@@ -49,6 +49,8 @@ namespace Garage2._0.Controllers
             }
             else
             {
+                // Tempdata to get the regnumber to the Park form.
+                TempData["Regnumber"] = searchText;
                 // Fordonet finns inte
                 return View(nameof(Park));
             }
@@ -123,6 +125,7 @@ namespace Garage2._0.Controllers
                     {
                         db.Add(model);
                         await db.SaveChangesAsync();
+                        TempData["Message"] = "";
                         return RedirectToAction("Details", new { id = model.Id });
                     }
                     catch (Exception ex)
@@ -131,15 +134,10 @@ namespace Garage2._0.Controllers
                         {
                             //Exception thrown from System.Data.Entity.DbContext.SaveChanges when validating entities fails.
                         }
-                        else
                         if (ex.GetType() == typeof(DbUnexpectedValidationException))
                         {
                             //Exception thrown from System.Data.Entity.DbContext.GetValidationErrors when an
                             //exception is thrown from the validation code.
-                        }
-                        else
-                        {
-                            //All remaining exception here 
                         }
                     }
                 }
@@ -229,6 +227,9 @@ namespace Garage2._0.Controllers
                 return NotFound();
             }
 
+            string str = vehicle.Color;
+            vehicle.Color = FirstLetterToUpper(str);
+
             if (ModelState.IsValid)
             {
                 try
@@ -251,6 +252,17 @@ namespace Garage2._0.Controllers
                 return RedirectToAction("Details", new { id = vehicle.Id });
             }
             return View(vehicle);    
+        }
+
+        private string FirstLetterToUpper(string str)
+        {
+            if (str == null)
+                return null;
+
+            if (str.Length > 1)
+                return char.ToUpper(str[0]) + str.Substring(1);
+
+            return str.ToUpper();
         }
 
 
