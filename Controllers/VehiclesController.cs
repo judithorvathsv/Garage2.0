@@ -20,11 +20,7 @@ namespace Garage2._0.Controllers
             db = context;
         }
 
-        // GET: Vehicles
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Vehicle.ToListAsync());
-        }
+ 
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
@@ -91,7 +87,7 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
-        public IActionResult Index1()
+        public IActionResult Index()
         {
             return View();
         }
@@ -232,117 +228,7 @@ namespace Garage2._0.Controllers
         }
 
         
-         [HttpGet]
-            public async Task<IActionResult> Index(int id, string sortingVehicle)    
-         {                
-                 ViewData["VehicleParameterForSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "ParameterForSorting" : "";
-                 var model = from x in db.Vehicle select x;
-
-             if (id == 1)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.RegistrationNumber);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.RegistrationNumber);
-                         break;
-                 }
-             }
-             if (id == 2)
-             {    
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.VehicleType);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.VehicleType);
-                         break;
-                 }
-             }
-
-             if (id == 3)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.Color);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.Color);
-                         break;
-                 }
-             }
-
-             if (id == 4)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.Brand);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.Brand);
-                         break;
-                 }
-             }
-             if (id == 5)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.VehicleModel);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.VehicleModel);
-                         break;
-                 }
-             }
-             if (id == 6)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.NumberOfWheels);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.NumberOfWheels);
-                         break;
-                 }
-             }
-             if (id == 7)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.IsParked);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.IsParked);
-                         break;
-                 }
-             }
-             if (id == 8)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.TimeOfArrival);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.TimeOfArrival);
-                         break;
-                 }
-             }     
-             return View(await model.AsNoTracking().ToListAsync());
-     }       
-        
-
-
-
-
+ 
         [HttpGet]
         public async Task<IActionResult> Overview(string sortingVehicle)
         {          
