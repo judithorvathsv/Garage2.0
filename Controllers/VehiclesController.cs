@@ -21,11 +21,6 @@ namespace Garage2._0.Controllers
             db = context;
         }
 
-        // GET: Vehicles
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Vehicle.ToListAsync());
-        }
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
@@ -75,19 +70,114 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-
         public async Task<IActionResult> Overview()
         {
-            var model =  db.Vehicle.Select(o => new OverviewViewModel
+            var model = new OverviewListModel();
+            model.Overview = (IEnumerable<OverviewViewModel>)db.Vehicle.Select(v => new OverviewViewModel
             {
-                VehicleId = o.Id,
-                VehicleType = o.VehicleType,
-                VehicleRegistrationNumber = o.RegistrationNumber,
-                VehicleArrivalTime = o.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - o.TimeOfArrival
-            });
-            
-            return View(await model.ToListAsync());
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+            }).ToListAsync();
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+            return View(model);
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync()
+        {
+            return await db.Vehicle
+                        .Select(t => t.VehicleType)
+                        .Distinct()
+                        .Select(g => new SelectListItem
+                        {
+                            Text = g.ToString(),
+                            Value = g.ToString()
+                        })
+                        .ToListAsync();
+        }
+
+        public async Task<IActionResult> Filter(string registrationNumber, int? vehicleType)
+        {
+            var result = string.IsNullOrWhiteSpace(registrationNumber) ?
+                           db.Vehicle :
+                           db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
+
+            result = vehicleType == null ?
+                                    result :
+                                    result.Where(v => (int)v.VehicleType == vehicleType);
+
+
+            var model = await result.Select(v => new OverviewViewModel
+            {
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+
+            }).ToListAsync();
+
+            return View(nameof(Overview), model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Overview(string sortingVehicle)
+        {
+            ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
+            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending" ? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
+            ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
+            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";
+
+            var allVehicles = db.Vehicle.Select(v => v);
+
+            switch (sortingVehicle)
+            {
+                case "VehicleTypeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
+                    break;
+
+
+                case "RegistrationNumberSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
+                    break;
+                case "RegistrationNumberSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
+                    break;
+
+
+                case "ArrivalTimeSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "ArrivalTimeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
+
+
+                case "DurationParkedSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "DurationParkedSortingOrderByDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
+
+                default:
+                    allVehicles = allVehicles.OrderBy(x => x.VehicleType);
+                    break;
+            }
+
+            var model = await allVehicles.Select(v => new OverviewViewModel
+            {
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+
+            }).ToListAsync();
+
+            return View(model);
         }
 
         // GET: Vehicles/Create
@@ -263,186 +353,6 @@ namespace Garage2._0.Controllers
                 return char.ToUpper(str[0]) + str.Substring(1);
 
             return str.ToUpper();
-        }
-
-
-        public async Task<IActionResult> Filter(string registrationNumber)
-        {
-            var model = string.IsNullOrWhiteSpace(registrationNumber) ?
-                            db.Vehicle :
-                            db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
-            return View(nameof(Index), await model.ToListAsync());        
-        }
-
-        
-         [HttpGet]
-            public async Task<IActionResult> Index(int id, string sortingVehicle)    
-         {                
-                 ViewData["VehicleParameterForSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "ParameterForSorting" : "";
-                 var model = from x in db.Vehicle select x;
-
-             if (id == 1)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.RegistrationNumber);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.RegistrationNumber);
-                         break;
-                 }
-             }
-             if (id == 2)
-             {    
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.VehicleType);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.VehicleType);
-                         break;
-                 }
-             }
-
-             if (id == 3)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.Color);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.Color);
-                         break;
-                 }
-             }
-
-             if (id == 4)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.Brand);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.Brand);
-                         break;
-                 }
-             }
-             if (id == 5)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.VehicleModel);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.VehicleModel);
-                         break;
-                 }
-             }
-             if (id == 6)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.NumberOfWheels);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.NumberOfWheels);
-                         break;
-                 }
-             }
-             if (id == 7)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.IsParked);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.IsParked);
-                         break;
-                 }
-             }
-             if (id == 8)
-             {
-                 switch (sortingVehicle)
-                 {
-                     case "ParameterForSorting":
-                         model = model.OrderBy(x => x.TimeOfArrival);
-                         break;
-                     default:
-                         model = model.OrderByDescending(x => x.TimeOfArrival);
-                         break;
-                 }
-             }     
-             return View(await model.AsNoTracking().ToListAsync());
-     }       
-        
-
-
-
-
-        [HttpGet]
-        public async Task<IActionResult> Overview(string sortingVehicle)
-        {          
-            ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
-            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending"? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
-            ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
-            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";         
-
-            var allVehicles = db.Vehicle.Select(v => v);
-            
-                switch (sortingVehicle)
-                {               
-                    case "VehicleTypeSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
-                        break;
-
-
-                    case "RegistrationNumberSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
-                        break;
-                    case "RegistrationNumberSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
-                        break;
-
-
-                    case "ArrivalTimeSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                        break;
-                    case "ArrivalTimeSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                        break;
-
-
-                    case "DurationParkedSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                        break;
-                    case "DurationParkedSortingOrderByDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                         break;
-
-                    default:
-                        allVehicles = allVehicles.OrderBy(x => x.VehicleType);
-                        break;
-            }
-            
-
-            var model = await allVehicles.Select(v => new OverviewViewModel
-            {
-                VehicleId = v.Id,
-                VehicleType = v.VehicleType,
-                VehicleRegistrationNumber = v.RegistrationNumber,
-                VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival           
-
-            }).ToListAsync();
-
-            return View(model);
         }
 
 
