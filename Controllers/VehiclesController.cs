@@ -68,10 +68,10 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-        public async Task<IActionResult> Overview()
+        public async Task<IActionResult> Overview1()
         {
             var model = new OverviewListModel();
-            model.Overview = (IEnumerable<OverviewViewModel>)db.Vehicle.Select(v => new OverviewViewModel
+            model.Overview = await db.Vehicle.Select(v => new OverviewViewModel
             {
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
@@ -80,7 +80,7 @@ namespace Garage2._0.Controllers
                 VehicleParkDuration = DateTime.Now - v.TimeOfArrival
             }).ToListAsync();
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
-            return View(model);
+            return View("Overview", model);
         }
 
         private async Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync()
@@ -96,26 +96,26 @@ namespace Garage2._0.Controllers
                         .ToListAsync();
         }
 
-        public async Task<IActionResult> Filter(string registrationNumber, int? vehicleType)
+        public async Task<IActionResult> Filter(OverviewListModel viewModel)
         {
-            var result = string.IsNullOrWhiteSpace(registrationNumber) ?
+            var model = new OverviewListModel();
+            var result = string.IsNullOrWhiteSpace(viewModel.Regnumber) ?
                            db.Vehicle :
-                           db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
+                           db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber));
 
-            result = vehicleType == null ?
+            result = viewModel.Types == null ?
                                     result :
-                                    result.Where(v => (int)v.VehicleType == vehicleType);
+                                    result.Where(v => v.VehicleType == viewModel.Types);
 
-
-            var model = await result.Select(v => new OverviewViewModel
+            model.Overview = await result.Select(v => new OverviewViewModel
             {
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
                 VehicleRegistrationNumber = v.RegistrationNumber,
                 VehicleArrivalTime = v.TimeOfArrival,
                 VehicleParkDuration = DateTime.Now - v.TimeOfArrival
-
             }).ToListAsync();
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
             return View(nameof(Overview), model);
         }
