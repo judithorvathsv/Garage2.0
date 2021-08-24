@@ -70,7 +70,7 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-        public async Task<IActionResult> Overview1()
+        public async Task<IActionResult> Overview()
         {
             var model = new OverviewListModel();
             model.Overview = await db.Vehicle.Select(v => new OverviewViewModel
@@ -122,13 +122,14 @@ namespace Garage2._0.Controllers
             return View(nameof(Overview), model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Overview(string sortingVehicle)
+        [HttpGet, ActionName("Overview")]
+        public async Task<IActionResult> OverviewSort(string sortingVehicle)
         {
             ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
             ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending" ? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
             ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
             ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";
+
 
             var allVehicles = db.Vehicle.Select(v => v);
 
@@ -167,7 +168,8 @@ namespace Garage2._0.Controllers
                     break;
             }
 
-            var model = await allVehicles.Select(v => new OverviewViewModel
+            var model = new OverviewListModel();
+            model.Overview = await allVehicles.Select(v => new OverviewViewModel
             {
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
@@ -176,6 +178,8 @@ namespace Garage2._0.Controllers
                 VehicleParkDuration = DateTime.Now - v.TimeOfArrival
 
             }).ToListAsync();
+
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
             return View(model);
         }
