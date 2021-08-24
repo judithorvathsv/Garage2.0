@@ -73,15 +73,10 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Overview()
         {
             var model = new OverviewListModel();
-            model.Overview = await db.Vehicle.Select(v => new OverviewViewModel
-            {
-                VehicleParked = v.IsParked,
-                VehicleId = v.Id,
-                VehicleType = v.VehicleType,
-                VehicleRegistrationNumber = v.RegistrationNumber,
-                VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
-            }).ToListAsync();
+
+            var vehicles = await db.Vehicle.ToListAsync();
+            model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
+            
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
             return View("Overview", model);
         }
@@ -110,15 +105,9 @@ namespace Garage2._0.Controllers
                                     result :
                                     result.Where(v => v.VehicleType == viewModel.Types);
 
-            model.Overview = await result.Select(v => new OverviewViewModel
-            {
-                VehicleParked = v.IsParked,
-                VehicleId = v.Id,
-                VehicleType = v.VehicleType,
-                VehicleRegistrationNumber = v.RegistrationNumber,
-                VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
-            }).ToListAsync();
+            var vehicles = await db.Vehicle.ToListAsync();
+            model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
+            
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
             return View(nameof(Overview), model);
@@ -171,16 +160,9 @@ namespace Garage2._0.Controllers
             }
 
             var model = new OverviewListModel();
-            model.Overview = await allVehicles.Select(v => new OverviewViewModel
-            {
-                VehicleParked = v.IsParked,
-                VehicleId = v.Id,
-                VehicleType = v.VehicleType,
-                VehicleRegistrationNumber = v.RegistrationNumber,
-                VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
 
-            }).ToListAsync();
+            var vehicles = await db.Vehicle.ToListAsync();
+            model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
 
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
@@ -459,6 +441,21 @@ namespace Garage2._0.Controllers
 
             return View(model);
         }
+
+        private OverviewViewModel OverviewViewModelBuilder(Vehicle vehicle)
+        {
+            return new OverviewViewModel
+            {
+                VehicleParked = vehicle.IsParked,
+                VehicleId = vehicle.Id,
+                VehicleType = vehicle.VehicleType,
+                VehicleRegistrationNumber = vehicle.RegistrationNumber,
+                VehicleArrivalTime = vehicle.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - vehicle.TimeOfArrival
+            };
+
+        }
+
 
         public async Task<IActionResult> Statistics()
         {
