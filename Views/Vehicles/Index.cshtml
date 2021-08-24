@@ -4,52 +4,47 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Administration</h1>
+@{Layout = "~/Views/Shared/_LayoutOverview.cshtml";}
 
-<form asp-action="Filter">
-    <div class="input-group">
-        <input type="text" class="form-control" name="registrationNumber" placeholder="Search on registration number..." />
-        <button type="submit" class="btn btn-primary">&#128269;Search</button>
-      
-    </div>
-</form>
+<h1>Administration view</h1>
+
 
 
 <table class="table">
-    <thead>
+    <thead>       
         <tr>
-            <th>
-
-                @Html.DisplayNameFor(model => model.RegistrationNumber)
+            <th>   
+                <a asp-action="Index" asp-route-id="1" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.RegistrationNumber)</a>                
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
+                <a asp-action="Index" asp-route-id="2" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.VehicleType)</a>           
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                <a asp-action="Index" asp-route-id="3" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.Color)</a>            
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand)
+                <a asp-action="Index" asp-route-id="4" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.Brand)</a>        
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleModel)
+                <a asp-action="Index" asp-route-id="5" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.VehicleModel)</a>         
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfWheels)
+                <a asp-action="Index" asp-route-id="6" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.NumberOfWheels)</a>              
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsParked)
+                <a asp-action="Index" asp-route-id="7" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.IsParked)</a>              
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TimeOfArrival)
+                <a asp-action="Index" asp-route-id="8" asp-route-sortingVehicle="@ViewData["VehicleParameterForSorting"]">@Html.DisplayNameFor(model => model.TimeOfArrival)</a>      
             </th>
-            <th>  <form asp-action="Park">
-            <button type="submit" class="btn btn-primary" asp-action="Park">Create New</button>
-            </form>
+            <th>
+                <form asp-action="Park">
+                    <button type="submit" class="btn btn-primary" asp-action="Park">Park a vehicle</button>
+                </form>
             </th>
         </tr>
     </thead>
-    
+
     <tbody>
         @foreach (var item in Model)
         {

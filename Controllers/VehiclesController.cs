@@ -274,11 +274,175 @@ namespace Garage2._0.Controllers
             return View(nameof(Index), await model.ToListAsync());        
         }
 
+        
+         [HttpGet]
+            public async Task<IActionResult> Index(int id, string sortingVehicle)    
+         {                
+                 ViewData["VehicleParameterForSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "ParameterForSorting" : "";
+                 var model = from x in db.Vehicle select x;
 
-        public async Task<IActionResult> Order()
-        {
-            var model = db.Vehicle.OrderBy(o => o.RegistrationNumber);
-            return View(nameof(Index), await model.ToListAsync());
+             if (id == 1)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.RegistrationNumber);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.RegistrationNumber);
+                         break;
+                 }
+             }
+             if (id == 2)
+             {    
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.VehicleType);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.VehicleType);
+                         break;
+                 }
+             }
+
+             if (id == 3)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.Color);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.Color);
+                         break;
+                 }
+             }
+
+             if (id == 4)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.Brand);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.Brand);
+                         break;
+                 }
+             }
+             if (id == 5)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.VehicleModel);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.VehicleModel);
+                         break;
+                 }
+             }
+             if (id == 6)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.NumberOfWheels);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.NumberOfWheels);
+                         break;
+                 }
+             }
+             if (id == 7)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.IsParked);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.IsParked);
+                         break;
+                 }
+             }
+             if (id == 8)
+             {
+                 switch (sortingVehicle)
+                 {
+                     case "ParameterForSorting":
+                         model = model.OrderBy(x => x.TimeOfArrival);
+                         break;
+                     default:
+                         model = model.OrderByDescending(x => x.TimeOfArrival);
+                         break;
+                 }
+             }     
+             return View(await model.AsNoTracking().ToListAsync());
+     }       
+        
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Overview(string sortingVehicle)
+        {          
+            ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
+            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending"? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
+            ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
+            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";         
+
+            var allVehicles = db.Vehicle.Select(v => v);
+            
+                switch (sortingVehicle)
+                {               
+                    case "VehicleTypeSortingDescending":
+                        allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
+                        break;
+
+
+                    case "RegistrationNumberSortingAscending":
+                        allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
+                        break;
+                    case "RegistrationNumberSortingDescending":
+                        allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
+                        break;
+
+
+                    case "ArrivalTimeSortingAscending":
+                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                        break;
+                    case "ArrivalTimeSortingDescending":
+                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                        break;
+
+
+                    case "DurationParkedSortingAscending":
+                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                        break;
+                    case "DurationParkedSortingOrderByDescending":
+                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                         break;
+
+                    default:
+                        allVehicles = allVehicles.OrderBy(x => x.VehicleType);
+                        break;
+            }
+            
+
+            var model = await allVehicles.Select(v => new OverviewViewModel
+            {
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival           
+
+            }).ToListAsync();
+
+            return View(model);
         }
 
 
@@ -334,10 +498,6 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
         
-
-
-
-
 
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -30,8 +30,21 @@
         </nav>
     </header>
     <div class="container">
+        <div>          
+        </div>
         <main role="main" class="pb-3">
-            @RenderBody()
+          
+            <form asp-action="Filter">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="registrationNumber" placeholder="Search on registration number..." />
+                    <button type="submit" class="btn btn-primary">&#128269;Search</button>
+                </div>
+            </form>
+
+            <br />   
+                @RenderBody()
+        
+    
         </main>
     </div>
 
