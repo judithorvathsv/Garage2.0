@@ -296,7 +296,10 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
+            ViewBag.id = vehicle.Id;
+            ViewBag.departureTime = departureTime;
+            return RedirectToAction("UnParkResponse", new { id = vehicle.Id, departureTime });
+            //return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
         }
 
         public async Task<IActionResult> Change(int? Id)
@@ -432,6 +435,12 @@ namespace Garage2._0.Controllers
         {
             return db.Vehicle.Any(e => e.Id == id);
         }
+        public IActionResult UnParkResponse(int id, DateTime departureTime)
+        {
+            ViewBag.id = id;
+            ViewBag.departureTime = departureTime;
+            return View(nameof(UnParkResponse));
+        }
 
         public async Task<IActionResult> Receipt(int id, DateTime departureTime)
         {
@@ -443,7 +452,7 @@ namespace Garage2._0.Controllers
                 VehicleArrivalTime = vehicle.TimeOfArrival,
                 VehicleDepartureTime = departureTime, 
                 VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
-                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+                VehicleParkPrice = (departureTime - vehicle.TimeOfArrival).TotalHours * 100
             };
 
             return View(model);
