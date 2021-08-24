@@ -12,23 +12,17 @@
     <div class="col-md-4">
         <form asp-action="Change">
 
-
             <div class="form-group">
                 <label asp-for="RegistrationNumber" class="control-label"></label>
-                <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)"/>
+                <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />
                 <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
             </div>
-
-
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label typeLabel">Type  </label>
                 <select name="VehicleType" asp-for="VehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
                     <option selected="selected" value="">Please select</option>
                 </select>
             </div>
-
-
-
             <div class="form-group">
                 <label asp-for="Color" class="control-label"></label>
                 <input asp-for="Color" class="form-control" />
@@ -50,16 +44,20 @@
                 <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
             </div>
 
+            @if (Model.IsParked == true)
+            {
+                <input asp-for="IsParked" value="true" type="hidden" />
+            }
+            else
+            {
+                <input asp-for="IsParked" value="false" type="hidden" />
+            }
 
             <div class="form-group">
                 <input type="submit" value="Change" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Overview">Back to Overview</a>
 </div>
 
 @section Scripts {

@@ -7,7 +7,6 @@ namespace Garage2._0.Models
 {
     public enum VehicleTypes
     {      
-       
         Bicycle=1,       
         Boat =2,
         Bus =3,
