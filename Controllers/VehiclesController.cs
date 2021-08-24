@@ -75,6 +75,7 @@ namespace Garage2._0.Controllers
             var model = new OverviewListModel();
             model.Overview = await db.Vehicle.Select(v => new OverviewViewModel
             {
+                VehicleParked = v.IsParked,
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
                 VehicleRegistrationNumber = v.RegistrationNumber,
@@ -111,6 +112,7 @@ namespace Garage2._0.Controllers
 
             model.Overview = await result.Select(v => new OverviewViewModel
             {
+                VehicleParked = v.IsParked,
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
                 VehicleRegistrationNumber = v.RegistrationNumber,
@@ -169,6 +171,7 @@ namespace Garage2._0.Controllers
 
             var model = await allVehicles.Select(v => new OverviewViewModel
             {
+                VehicleParked = v.IsParked,
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
                 VehicleRegistrationNumber = v.RegistrationNumber,
