@@ -1,0 +1,23 @@
+﻿@model StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistics";
+    Layout = "_Layout";
+}
+
+
+<ul class="col">
+    <li class="row">
+        <label asp-for="NumberOfWheels" class="control-label"></label>
+        <div class="col">
+            @Model.NumberOfWheels
+        </div>
+    </li>
+    <li class="row">
+        <label asp-for="GeneratedRevenue" class="control-label"></label>
+        <div class="col">
+            @Html.DisplayFor(Model => Model.GeneratedRevenue)
+        </div>
+    </li>
+</ul>
+

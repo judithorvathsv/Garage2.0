@@ -459,5 +459,27 @@ namespace Garage2._0.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Statistics()
+        {
+            var vehicles = await db.Vehicle.ToListAsync();
+
+            var model = new StatisticsViewModel
+            {
+                NumberOfWheels = vehicles
+                                    .Where(v => v.IsParked)
+                                    .Select(v => v.NumberOfWheels)
+                                    .Sum(),
+
+                GeneratedRevenue = vehicles
+                                    .Where(v => v.IsParked)
+                                    .Select(v => 
+                                        (DateTime.Now - v.TimeOfArrival).Hours
+                                      + (DateTime.Now - v.TimeOfArrival).Days * 24
+                                        )
+                                    .Sum() * 100
+            };
+            return View(model);
+        }
     }
 }
