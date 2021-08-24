@@ -40,5 +40,7 @@ namespace Garage2._0.Models
         public bool IsParked { get; set; }
         
         public DateTime TimeOfArrival { get; set; }
+
+        //public TimeSpan TimeParked { get; set; }
     }
 }
