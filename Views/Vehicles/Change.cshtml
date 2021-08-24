@@ -10,8 +10,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Change">
-
+        <form asp-action="Change">                    
+            <input asp-for="Id" type="hidden"/>
             <div class="form-group">
                 <label asp-for="RegistrationNumber" class="control-label"></label>
                 <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />

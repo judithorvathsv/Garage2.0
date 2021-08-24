@@ -322,9 +322,10 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-        [HttpPost]
+     
+      [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
+        public async Task<IActionResult> Change(int Id, [Bind("Id, VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
             if (Id != vehicle.Id)
             {
@@ -339,12 +340,13 @@ namespace Garage2._0.Controllers
                 try
                 {
                     db.Update(vehicle);
+                    TempData["ChangedVehicle"] = "The vehicle is changed!";
                     await db.SaveChangesAsync();
-                    
+                    return RedirectToAction("Details", new {vehicle.Id });
+                    // return RedirectToAction("Details", new { Id = vehicle.Id });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
                     if (!VehicleExists(vehicle.Id))
                     {
                         return NotFound();
@@ -353,8 +355,7 @@ namespace Garage2._0.Controllers
                     {
                         throw;
                     }
-                }
-                return RedirectToAction("Details", new { id = vehicle.Id });
+                }               
             }
             return View(vehicle);
         }
@@ -370,8 +371,7 @@ namespace Garage2._0.Controllers
             return str.ToUpper();
         }
 
-
-
+   
 
         /*
         // POST: Vehicles/Edit/5
