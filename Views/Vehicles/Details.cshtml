@@ -10,7 +10,7 @@
 
     @if (Model.IsParked == true)
     {
-    <h5>Your Car is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
+        <h5>Your vehicle is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
         <p>If all information is correct you are finished otherwise you can change it.</p>
     }
     <hr />
@@ -65,7 +65,8 @@
         </dd>
     </dl>
 </div>
-<div>
+<p class="text-danger">@TempData["Message"]</p>
+<div class="form-group">
     @if (Model.IsParked == true)
     {
         <a class="btn btn-primary" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
@@ -74,8 +75,5 @@
     {
         <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
     }
-</div>
-    <br/>
-<div>
-    <a asp-action="Change" asp-route-id="@Model.Id">Change</a> 
+    <a class="btn btn-secondary" asp-action="Change" asp-route-id="@Model.Id">Change</a>
 </div>
