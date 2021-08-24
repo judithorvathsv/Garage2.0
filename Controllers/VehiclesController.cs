@@ -44,8 +44,9 @@ namespace Garage2._0.Controllers
             }
             else
             {
+                TempData["Regnumber"] = searchText.ToUpper();
                 // Fordonet finns inte
-                ViewBag.RegNr = searchText.ToUpper();
+                //ViewBag.RegNr = searchText.ToUpper();
                 return View(nameof(Park));
             }
         }
