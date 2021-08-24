@@ -19,18 +19,15 @@
     <tbody>
         @foreach (var item in Model)
         {
-            if (item.VehicleParked)
-            {
-                <tr>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleType)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleArrivalTime)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleParkDuration) </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a>
-                    </td>
-                </tr>
-            }
+        <tr>
+            <td>  @Html.DisplayFor(modelItem => item.VehicleType)  </td>
+            <td>  @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)  </td>
+            <td>  @Html.DisplayFor(modelItem => item.VehicleArrivalTime)  </td>
+            <td>  @Html.DisplayFor(modelItem => item.VehicleParkDuration) </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

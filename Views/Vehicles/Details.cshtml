@@ -10,7 +10,7 @@
 
     @if (Model.IsParked == true)
     {
-        <h5>Your Car is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
+    <h5>Your Car is Parked from @Model.TimeOfArrival.ToShortDateString() @Model.TimeOfArrival.ToShortTimeString()</h5>
         <p>If all information is correct you are finished otherwise you can change it.</p>
     }
     <hr />
@@ -57,20 +57,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsParked)
         </dd>
-
-        @if (Model.IsParked)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.TimeOfArrival)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.TimeOfArrival)
-            </dd>
-        }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TimeOfArrival)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TimeOfArrival)
+        </dd>
     </dl>
 </div>
 <div>
-    @if (Model.IsParked)
+    @if (Model.IsParked == true)
     {
         <a class="btn btn-primary" asp-action="Unpark" asp-route-id="@Model.Id">Unpark</a>
     }
@@ -79,7 +75,7 @@
         <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
     }
 </div>
-<br />
+    <br/>
 <div>
-    <a asp-action="Change" asp-route-id="@Model.Id">Change</a>
+    <a asp-action="Change" asp-route-id="@Model.Id">Change</a> 
 </div>
