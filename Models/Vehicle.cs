@@ -25,6 +25,7 @@ namespace Garage2._0.Models
         [MaxLength(20)]
         public string Color { get; set; }
 
+
         [MaxLength(20)]
         public string Brand { get; set; }
 

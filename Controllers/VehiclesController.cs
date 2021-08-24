@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0.Data;
 using Garage2._0.Models;
 using Garage2._0.Models.ViewModels;
+using System.Data.Entity.Validation;
 
 namespace Garage2._0.Controllers
 {
@@ -19,7 +20,6 @@ namespace Garage2._0.Controllers
         {
             db = context;
         }
-
 
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
@@ -44,7 +44,9 @@ namespace Garage2._0.Controllers
             }
             else
             {
+                TempData["Regnumber"] = searchText.ToUpper();
                 // Fordonet finns inte
+                //ViewBag.RegNr = searchText.ToUpper();
                 return View(nameof(Park));
             }
         }
@@ -70,16 +72,119 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Overview()
         {
-            var model = db.Vehicle.Select(o => new OverviewViewModel
+            var model = new OverviewListModel();
+            model.Overview = await db.Vehicle.Select(v => new OverviewViewModel
             {
-                VehicleId = o.Id,
-                VehicleType = o.VehicleType,
-                VehicleRegistrationNumber = o.RegistrationNumber,
-                VehicleArrivalTime = o.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - o.TimeOfArrival
-            });
+                VehicleParked = v.IsParked,
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+            }).ToListAsync();
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+            return View("Overview", model);
+        }
 
-            return View(await model.ToListAsync());
+        private async Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync()
+        {
+            return await db.Vehicle
+                        .Select(t => t.VehicleType)
+                        .Distinct()
+                        .Select(g => new SelectListItem
+                        {
+                            Text = g.ToString(),
+                            Value = g.ToString()
+                        })
+                        .ToListAsync();
+        }
+
+        public async Task<IActionResult> Filter(OverviewListModel viewModel)
+        {
+            var model = new OverviewListModel();
+            var result = string.IsNullOrWhiteSpace(viewModel.Regnumber) ?
+                           db.Vehicle :
+                           db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber));
+
+            result = viewModel.Types == null ?
+                                    result :
+                                    result.Where(v => v.VehicleType == viewModel.Types);
+
+            model.Overview = await result.Select(v => new OverviewViewModel
+            {
+                VehicleParked = v.IsParked,
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+            }).ToListAsync();
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+
+            return View(nameof(Overview), model);
+        }
+
+        [HttpGet, ActionName("Overview")]
+        public async Task<IActionResult> OverviewSort(string sortingVehicle)
+        {
+            ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
+            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending" ? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
+            ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
+            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";
+
+
+            var allVehicles = db.Vehicle.Select(v => v);
+
+            switch (sortingVehicle)
+            {
+                case "VehicleTypeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
+                    break;
+
+
+                case "RegistrationNumberSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
+                    break;
+                case "RegistrationNumberSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
+                    break;
+
+
+                case "ArrivalTimeSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "ArrivalTimeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
+
+
+                case "DurationParkedSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "DurationParkedSortingOrderByDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
+
+                default:
+                    allVehicles = allVehicles.OrderBy(x => x.VehicleType);
+                    break;
+            }
+
+            var model = new OverviewListModel();
+            model.Overview = await allVehicles.Select(v => new OverviewViewModel
+            {
+                VehicleParked = v.IsParked,
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
+
+            }).ToListAsync();
+
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+
+            return View(model);
         }
 
         // GET: Vehicles/Create
@@ -87,6 +192,8 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
+
+        //Start page where search on reg nr is done
         public IActionResult Index()
         {
             return View();
@@ -98,27 +205,54 @@ namespace Garage2._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
-            var model = new Vehicle
+            bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
+ 
+            if (!registeredvehicle)
             {
-                RegistrationNumber = vehicle.RegistrationNumber,
-                VehicleType = vehicle.VehicleType,
-                Brand = vehicle.Brand,
-                Color = vehicle.Color,
-                VehicleModel = vehicle.VehicleModel,
-                NumberOfWheels = vehicle.NumberOfWheels,
-                IsParked = true,
-                TimeOfArrival = DateTime.Now
-            };
+                var model = new Vehicle
+                {
+                    RegistrationNumber = vehicle.RegistrationNumber,
+                    VehicleType = vehicle.VehicleType,
+                    Brand = vehicle.Brand,
+                    Color = vehicle.Color,
+                    VehicleModel = vehicle.VehicleModel,
+                    NumberOfWheels = vehicle.NumberOfWheels,
+                    IsParked = true,
+                    TimeOfArrival = DateTime.Now
+                };
 
-            if (ModelState.IsValid)
-            {
-                db.Add(model);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = model.Id });
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        db.Add(model);
+                        await db.SaveChangesAsync();
+                        TempData["Message"] = "";
+                        return RedirectToAction("Details", new { id = model.Id });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.GetType() == typeof(DbEntityValidationException))
+                        {
+                            //Exception thrown from System.Data.Entity.DbContext.SaveChanges when validating entities fails.
+                        }
+                        if (ex.GetType() == typeof(DbUnexpectedValidationException))
+                        {
+                            //Exception thrown from System.Data.Entity.DbContext.GetValidationErrors when an
+                            //exception is thrown from the validation code.
+                        }
+                    }
+                }
+                return View(model);
             }
-            return View(model);
+            else
+            {
+                var existingvehicle = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber.Contains(vehicle.RegistrationNumber));
+                TempData["Message"] = "Your vehicle is alredy registred!";
+                return RedirectToAction("Details", new { id = existingvehicle.Id });
+            }
+    
         }
-
         [HttpGet]
         public async Task<IActionResult> ParkRegisteredVehicle(int? id)
         {
@@ -197,6 +331,9 @@ namespace Garage2._0.Controllers
                 return NotFound();
             }
 
+            string str = vehicle.Color;
+            vehicle.Color = FirstLetterToUpper(str);
+
             if (ModelState.IsValid)
             {
                 try
@@ -222,49 +359,15 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Overview(string sortingVehicle)
+        private string FirstLetterToUpper(string str)
         {
-            ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
-            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending" ? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
-            ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";  
+            if (str == null)
+                return null;
 
-            var allVehicles = db.Vehicle.Select(v => v);
+            if (str.Length > 1)
+                return char.ToUpper(str[0]) + str.Substring(1);
 
-            switch (sortingVehicle)
-            {
-                case "VehicleTypeSortingDescending":
-                    allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
-                    break;
-
-                case "RegistrationNumberSortingAscending":
-                    allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
-                    break;
-                case "RegistrationNumberSortingDescending":
-                    allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
-                    break;
-
-                case "ArrivalTimeSortingAscending":
-                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                    break;
-                case "ArrivalTimeSortingDescending":
-                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                    break;
-
-                default:
-                    allVehicles = allVehicles.OrderBy(x => x.VehicleType);
-                    break;
-            }
-
-            var model = await allVehicles.Select(v => new OverviewViewModel
-            {
-                VehicleId = v.Id,
-                VehicleType = v.VehicleType,
-                VehicleRegistrationNumber = v.RegistrationNumber,
-                VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
-            }).ToListAsync();  
-            return View(model);
+            return str.ToUpper();
         }
 
 
