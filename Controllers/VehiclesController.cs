@@ -203,6 +203,7 @@ namespace Garage2._0.Controllers
                 {
                     db.Update(vehicle);
                     await db.SaveChangesAsync();
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
