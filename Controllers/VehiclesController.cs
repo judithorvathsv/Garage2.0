@@ -44,8 +44,6 @@ namespace Garage2._0.Controllers
             }
             else
             {
-                // Tempdata to get the regnumber to the Park form.
-                TempData["Regnumber"] = searchText;
                 // Fordonet finns inte
                 return View(nameof(Park));
             }
@@ -185,7 +183,10 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -246,6 +247,7 @@ namespace Garage2._0.Controllers
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
+            vehicle.TimeOfArrival = DateTime.Now;
 
             try
             {
@@ -271,6 +273,7 @@ namespace Garage2._0.Controllers
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = false;
+            var departureTime = DateTime.Now;
 
             try
             {
@@ -289,7 +292,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Receipt");
+            return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
         }
 
         public async Task<IActionResult> Change(int? Id)
@@ -353,23 +356,6 @@ namespace Garage2._0.Controllers
                 return char.ToUpper(str[0]) + str.Substring(1);
 
             return str.ToUpper();
-        }
-
-
-        // GET: Vehicles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await db.Vehicle.FindAsync(id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-            return View(vehicle);
         }
 
         
@@ -443,9 +429,20 @@ namespace Garage2._0.Controllers
             return db.Vehicle.Any(e => e.Id == id);
         }
 
-        public IActionResult Receipt()
+        public async Task<IActionResult> Receipt(int id, DateTime departureTime)
         {
-            return View();
+            var vehicle = await db.Vehicle.FindAsync(id);
+
+            var model = new ReceiptViewModel
+            {
+                VehicleRegistrationNumber = vehicle.RegistrationNumber,
+                VehicleArrivalTime = vehicle.TimeOfArrival,
+                VehicleDepartureTime = departureTime, 
+                VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
+                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+            };
+
+            return View(model);
         }
     }
 }
