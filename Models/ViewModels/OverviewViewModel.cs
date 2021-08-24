@@ -8,15 +8,18 @@ namespace Garage2._0.Models.ViewModels
 {
     public class OverviewViewModel
     {
+
+        public bool VehicleParked { get; set; }
+
         public int VehicleId { get; set; }
+        
         [Display(Name = "Vehicle Type")]
-
         public VehicleTypes VehicleType { get; set; }
+        
         [Display(Name = "Registration Plate")]
-
         public string VehicleRegistrationNumber { get; set; }
+        
         [Display(Name = "Arrival Time")]
-
         public DateTime VehicleArrivalTime { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:%d} day(s) {0:hh'h 'mm'm 'ss's'}", ApplyFormatInEditMode = true)]

@@ -20,11 +20,11 @@ namespace Garage2._0.Controllers
             db = context;
         }
 
- 
+
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
-            var exists =  db.Vehicle.Any(v => v.RegistrationNumber == searchText);
+            var exists = db.Vehicle.Any(v => v.RegistrationNumber == searchText);
 
             if (exists)
             {
@@ -70,7 +70,7 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Overview()
         {
-            var model =  db.Vehicle.Select(o => new OverviewViewModel
+            var model = db.Vehicle.Select(o => new OverviewViewModel
             {
                 VehicleId = o.Id,
                 VehicleType = o.VehicleType,
@@ -78,7 +78,7 @@ namespace Garage2._0.Controllers
                 VehicleArrivalTime = o.TimeOfArrival,
                 VehicleParkDuration = DateTime.Now - o.TimeOfArrival
             });
-            
+
             return View(await model.ToListAsync());
         }
 
@@ -111,16 +111,16 @@ namespace Garage2._0.Controllers
             };
 
             if (ModelState.IsValid)
-            {         
+            {
                 db.Add(model);
-                await db.SaveChangesAsync();           
+                await db.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = model.Id });
             }
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult>ParkRegisteredVehicle(int? id)
+        public async Task<IActionResult> ParkRegisteredVehicle(int? id)
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
@@ -173,25 +173,25 @@ namespace Garage2._0.Controllers
         }
 
         public async Task<IActionResult> Change(int? Id)
-        {         
-             if (Id == null)
+        {
+            if (Id == null)
             {
                 return NotFound();
             }
 
-             var vehicle = await db.Vehicle.FindAsync(Id);
+            var vehicle = await db.Vehicle.FindAsync(Id);
 
             if (vehicle == null)
             {
                 return NotFound();
             }
-            return View(vehicle);        
+            return View(vehicle);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
-        {                     
+        {
             if (Id != vehicle.Id)
             {
                 return NotFound();
@@ -207,7 +207,7 @@ namespace Garage2._0.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
 
-                    if (!VehicleExists(vehicle.Id))                  
+                    if (!VehicleExists(vehicle.Id))
                     {
                         return NotFound();
                     }
@@ -215,83 +215,83 @@ namespace Garage2._0.Controllers
                     {
                         throw;
                     }
-                }         
+                }
                 return RedirectToAction("Details", new { id = vehicle.Id });
             }
-            return View(vehicle);    
+            return View(vehicle);
         }
 
-        
+
         public async Task<IActionResult> Filter(string registrationNumber)
         {
             var model = string.IsNullOrWhiteSpace(registrationNumber) ?
                             db.Vehicle :
                             db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(registrationNumber));
-            return View(nameof(Index), await model.ToListAsync());        
+            return View(nameof(Index), await model.ToListAsync());
         }
 
-        
- 
+
+
         [HttpGet]
         public async Task<IActionResult> Overview(string sortingVehicle)
-        {          
+        {
             ViewData["VehicleTypeSorting"] = string.IsNullOrEmpty(sortingVehicle) ? "VehicleTypeSortingDescending" : "";
-            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending"? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
+            ViewData["RegistrationNumberSorting"] = sortingVehicle == "RegistrationNumberSortingAscending" ? "RegistrationNumberSortingDescending" : "RegistrationNumberSortingAscending";
             ViewData["ArrivalTimeSorting"] = sortingVehicle == "ArrivalTimeSortingAscending" ? "ArrivalTimeSortingDescending" : "ArrivalTimeSortingAscending";
-            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";         
+            ViewData["DurationParkedSorting"] = sortingVehicle == "DurationParkedSortingAscending" ? "DurationParkedSortingDescending" : "DurationParkedSortingAscending";
 
             var allVehicles = db.Vehicle.Select(v => v);
-            
-                switch (sortingVehicle)
-                {               
-                    case "VehicleTypeSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
-                        break;
+
+            switch (sortingVehicle)
+            {
+                case "VehicleTypeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
+                    break;
 
 
-                    case "RegistrationNumberSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
-                        break;
-                    case "RegistrationNumberSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
-                        break;
+                case "RegistrationNumberSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
+                    break;
+                case "RegistrationNumberSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
+                    break;
 
 
-                    case "ArrivalTimeSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                        break;
-                    case "ArrivalTimeSortingDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                        break;
+                case "ArrivalTimeSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "ArrivalTimeSortingDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
 
 
-                    case "DurationParkedSortingAscending":
-                        allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                        break;
-                    case "DurationParkedSortingOrderByDescending":
-                        allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                         break;
+                case "DurationParkedSortingAscending":
+                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
+                    break;
+                case "DurationParkedSortingOrderByDescending":
+                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
+                    break;
 
-                    default:
-                        allVehicles = allVehicles.OrderBy(x => x.VehicleType);
-                        break;
+                default:
+                    allVehicles = allVehicles.OrderBy(x => x.VehicleType);
+                    break;
             }
-            
+
 
             var model = await allVehicles.Select(v => new OverviewViewModel
             {
+                VehicleParked = v.IsParked,
                 VehicleId = v.Id,
                 VehicleType = v.VehicleType,
                 VehicleRegistrationNumber = v.RegistrationNumber,
                 VehicleArrivalTime = v.TimeOfArrival,
-                VehicleParkDuration = DateTime.Now - v.TimeOfArrival           
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
 
             }).ToListAsync();
 
             return View(model);
         }
 
-        
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -326,7 +326,7 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
-        
+
 
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -370,7 +370,7 @@ namespace Garage2._0.Controllers
             {
                 VehicleRegistrationNumber = vehicle.RegistrationNumber,
                 VehicleArrivalTime = vehicle.TimeOfArrival,
-                VehicleDepartureTime = departureTime, 
+                VehicleDepartureTime = departureTime,
                 VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
                 VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
             };
