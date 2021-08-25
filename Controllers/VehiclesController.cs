@@ -30,7 +30,7 @@ namespace Garage2._0.Controllers
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
-            var exists =  db.Vehicle.Any(v => v.RegistrationNumber == searchText);
+            var exists = db.Vehicle.Any(v => v.RegistrationNumber == searchText);
 
             if (exists)
             {
@@ -182,6 +182,12 @@ namespace Garage2._0.Controllers
         {
             return View();
         }
+
+        //Start page where search on reg nr is done
+        public IActionResult Index()
+        {
+            return View();
+        }
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -225,6 +231,7 @@ namespace Garage2._0.Controllers
                             //Exception thrown from System.Data.Entity.DbContext.GetValidationErrors when an
                             //exception is thrown from the validation code.
                         }
+                        else { }
                     }
                 }
                 return View(model);
@@ -235,10 +242,10 @@ namespace Garage2._0.Controllers
                 TempData["Message"] = "A vehicle with this registrationnumber is alredy registred!";
                 return RedirectToAction("Details", new { id = existingvehicle.Id });
             }
-    
+
         }
         [HttpGet]
-        public async Task<IActionResult>ParkRegisteredVehicle(int? id)
+        public async Task<IActionResult> ParkRegisteredVehicle(int? id)
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = true;
@@ -297,49 +304,67 @@ namespace Garage2._0.Controllers
                  return NotFound();
              }
 
-             var vehicle = await db.Vehicle.FindAsync(Id);
+            var vehicle = await db.Vehicle.FindAsync(Id);
 
             if (vehicle == null)
             {
                 return NotFound();
             }
-            return View(vehicle);        
+            return View(vehicle);
         }
+
+        public bool Equals(Vehicle b1, Vehicle b2)
+        {       
+            if (b1.RegistrationNumber == b2.RegistrationNumber && b1.Color == b2.Color && b1.Brand == b2.Brand 
+                && b1.VehicleModel == b2.VehicleModel && b1.NumberOfWheels == b2.NumberOfWheels && b1.VehicleType == b2.VehicleType)
+                return true;
+            else
+                return false;
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Change(int Id, [Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
-        {                     
-            if (Id != vehicle.Id)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> Change(int Id, Vehicle vehicle)
+        {
+            //från databasen
+            var v1 = await db.Vehicle.AsNoTracking().FirstOrDefaultAsync(v => v.Id == Id);           
 
-            string str = vehicle.Color;
-            vehicle.Color = FirstLetterToUpper(str);
+            if (!Equals(v1, vehicle))
+            {               
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (Id != vehicle.Id)
                 {
-                    db.Update(vehicle);
-                    await db.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
 
-                    if (!VehicleExists(vehicle.Id))                  
+                string str = vehicle.Color;
+                vehicle.Color = FirstLetterToUpper(str);
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        return NotFound();
+                        db.Update(vehicle);
+                        await db.SaveChangesAsync();
+                        TempData["ChangedVehicle"] = "The vehicle is changed!";
+                        return RedirectToAction("Details", new { vehicle.Id });
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!VehicleExists(vehicle.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
-                }         
-                return RedirectToAction("Details", new { id = vehicle.Id });
+                }
             }
-            return View(vehicle);    
+            //return View(vehicle);
+            return RedirectToAction("Details", new { vehicle.Id });
         }
 
         private string FirstLetterToUpper(string str)
@@ -353,7 +378,9 @@ namespace Garage2._0.Controllers
             return str.ToUpper();
         }
 
-        
+
+
+        /*
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -388,7 +415,7 @@ namespace Garage2._0.Controllers
             }
             return View(vehicle);
         }
-        
+        */
 
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -423,6 +450,28 @@ namespace Garage2._0.Controllers
         {
             return db.Vehicle.Any(e => e.Id == id);
         }
+        public async Task<IActionResult> UnParkResponse(int id, DateTime departureTime)
+        {
+            //    var v = db.Vehicle
+            //.Select(v => v.Id);
+            var model = await db.Vehicle
+                .Select(v => new UnParkResponseViewModel
+                {
+                    Id = v.Id,
+                    VehicleType= v.VehicleType,
+                    VehicleRegistrationNumber = v.RegistrationNumber,
+                    VehicleArrivalTime = v.TimeOfArrival,
+                    VehicleDepartureTime = departureTime,
+                    //VehicleParkDuration=v.
+                    //VehicleParkPrice
+                })
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            return View("UnParkResponse", model);
+            //ViewBag.id = id;
+            //ViewBag.departureTime = departureTime;
+            //return View(nameof(UnParkResponse));
+        }
 
         public async Task<IActionResult> Receipt(int id, DateTime departureTime)
         {
@@ -432,9 +481,9 @@ namespace Garage2._0.Controllers
             {
                 VehicleRegistrationNumber = vehicle.RegistrationNumber,
                 VehicleArrivalTime = vehicle.TimeOfArrival,
-                VehicleDepartureTime = departureTime, 
+                VehicleDepartureTime = departureTime,
                 VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
-                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+                VehicleParkPrice = (departureTime - vehicle.TimeOfArrival).TotalHours * 100
             };
 
             return View(model);
