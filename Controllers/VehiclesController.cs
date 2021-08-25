@@ -97,21 +97,22 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Filter(OverviewListModel viewModel)
         {
             var model = new OverviewListModel();
+            var vehicles = await db.Vehicle.ToListAsync();
+
             var result = string.IsNullOrWhiteSpace(viewModel.Regnumber) ?
-                           db.Vehicle :
-                           db.Vehicle.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber));
+                           vehicles :
+                           vehicles.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber));
 
             result = viewModel.Types == null ?
                                     result :
                                     result.Where(v => v.VehicleType == viewModel.Types);
 
-            var vehicles = await db.Vehicle.ToListAsync();
-            model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
-
+            model.Overview = result.Select(v => OverviewViewModelBuilder(v)).ToList();
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
             return View(nameof(Overview), model);
         }
+
 
         [HttpGet, ActionName("Overview")]
         public async Task<IActionResult> OverviewSort(string sortingVehicle)
