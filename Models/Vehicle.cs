@@ -12,7 +12,7 @@ namespace Garage2._0.Models
         public int Id { get; set; }
 
         [Display(Name = "Vehicle type")]
-        [Required]
+        [Required(ErrorMessage = "Please choose type!")]         
         public VehicleTypes VehicleType { get; set; }
 
         [Display(Name = "Registration number")]
@@ -46,14 +46,11 @@ namespace Garage2._0.Models
         [Range(0, 30, ErrorMessage = "Please enter correct number between 0-30!")]
         public int NumberOfWheels { get; set; }
 
+        [Display(Name = "Is Parked")]
         public bool IsParked { get; set; }
-        
-        public DateTime TimeOfArrival { get; set; }
 
-        internal bool SequenceEqual(Vehicle vehicle)
-        {
-            throw new NotImplementedException();
-        }
+        [Display(Name = "Time of arrival")]
+        public DateTime TimeOfArrival { get; set; }
 
         //public TimeSpan TimeParked { get; set; }
     }

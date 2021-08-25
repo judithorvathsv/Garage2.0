@@ -21,6 +21,12 @@ namespace Garage2._0.Controllers
             db = context;
         }
 
+        //Start page where search on reg nr is done
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         // Search for Vehicle
         public async Task<IActionResult> Search(string searchText)
         {
@@ -30,23 +36,12 @@ namespace Garage2._0.Controllers
             {
                 var model = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber == searchText);
 
-                if (model.IsParked)
-                {
-                    // Visa parkerat fordon
-                    return RedirectToAction("Details", new { id = model.Id });
-
-                }
-                else
-                {
-                    // Gå till en vy där man kan parkera
-                    return RedirectToAction("Details", new { id = model.Id });
-                }
+                return RedirectToAction("Details", new { id = model.Id });
             }
             else
             {
-                TempData["Regnumber"] = searchText?.ToUpper();
-                // Fordonet finns inte
-                //ViewBag.RegNr = searchText.ToUpper();
+                TempData["Regnumber"] = searchText.ToUpper();
+  
                 return View(nameof(Park));
             }
         }
@@ -84,6 +79,7 @@ namespace Garage2._0.Controllers
         private async Task<IEnumerable<SelectListItem>> GetVehicleTypesAsync()
         {
             return await db.Vehicle
+                        .Where(w => w.IsParked == true)
                         .Select(t => t.VehicleType)
                         .Distinct()
                         .Select(g => new SelectListItem
@@ -130,16 +126,12 @@ namespace Garage2._0.Controllers
                 case "VehicleTypeSortingDescending":
                     allVehicles = allVehicles.OrderByDescending(x => x.VehicleType);
                     break;
-
-
                 case "RegistrationNumberSortingAscending":
                     allVehicles = allVehicles.OrderBy(x => x.RegistrationNumber);
                     break;
                 case "RegistrationNumberSortingDescending":
                     allVehicles = allVehicles.OrderByDescending(x => x.RegistrationNumber);
                     break;
-
-
                 case "ArrivalTimeSortingAscending":
                     allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
                     break;
@@ -147,13 +139,6 @@ namespace Garage2._0.Controllers
                     allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
                     break;
 
-
-                case "DurationParkedSortingAscending":
-                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                    break;
-                case "DurationParkedSortingOrderByDescending":
-                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                    break;
 
                 default:
                     allVehicles = allVehicles.OrderBy(x => x.VehicleType);
@@ -176,11 +161,6 @@ namespace Garage2._0.Controllers
             return View();
         }
 
-        //Start page where search on reg nr is done
-        public IActionResult Index()
-        {
-            return View();
-        }
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -189,7 +169,7 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
             bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
-
+ 
             if (!registeredvehicle)
             {
                 var model = new Vehicle
@@ -232,7 +212,7 @@ namespace Garage2._0.Controllers
             else
             {
                 var existingvehicle = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber.Contains(vehicle.RegistrationNumber));
-                TempData["Message"] = "Your vehicle is alredy registred!";
+                TempData["Message"] = "A vehicle with this registrationnumber is alredy registred!";
                 return RedirectToAction("Details", new { id = existingvehicle.Id });
             }
 
@@ -287,18 +267,15 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            ViewBag.id = vehicle.Id;
-            ViewBag.departureTime = departureTime;
-            return RedirectToAction("UnParkResponse", new { id = vehicle.Id, departureTime });
-            //return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
+            return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
         }
 
         public async Task<IActionResult> Change(int? Id)
-        {
-            if (Id == null)
-            {
-                return NotFound();
-            }
+        {         
+             if (Id == null)
+             {
+                 return NotFound();
+             }
 
             var vehicle = await db.Vehicle.FindAsync(Id);
 
@@ -327,7 +304,7 @@ namespace Garage2._0.Controllers
             var v1 = await db.Vehicle.AsNoTracking().FirstOrDefaultAsync(v => v.Id == Id);           
 
             if (!Equals(v1, vehicle))
-            {               
+            {            
 
                 if (Id != vehicle.Id)
                 {

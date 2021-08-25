@@ -5,13 +5,11 @@
 }
 
 <h1>Change</h1>
-
-
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Change">                    
-            <input asp-for="Id" type="hidden"/>
+        <form asp-action="Change">
+            <input asp-for="Id" type="hidden" />
             <div class="form-group">
                 <label asp-for="RegistrationNumber" class="control-label"></label>
                 <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />
@@ -55,12 +53,9 @@
             }
 
             <div class="form-group">
-                <input type="submit" value="Change" class="btn btn-primary" />
+                <input type="submit" id="Change" value="Change" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

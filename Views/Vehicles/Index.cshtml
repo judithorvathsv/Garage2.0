@@ -4,29 +4,39 @@
 <div>
     <form asp-controller="Vehicles" asp-action="Search" name="f">
         <div class="input-group mb-3">
-            <input id="regNr" class="form-control" type="text" name="searchText" placeholder="Enter vehicle registration number" 
-                   style="text-transform:uppercase;" oninput="validate()" />
+            <input id="regNr" class="form-control" type="text" name="searchText" placeholder="Enter vehicle registration number"
+                   style="text-transform:uppercase;" oninput="validate()"  maxlength="10"/>
             <div class="input-group-append">
                 <button id="btn" class="btn btn-outline-info" disabled="disabled" type="submit">Search</button>
             </div>
         </div>
         <p id="error"></p>
     </form>
+    <br />
+    <p class="text-center lead">Welcome to the Garage the price of parking is 100 kr / hour.</p>
 </div>
 <script>
     function validate() {
-        if (document.getElementById("regNr").value == "") 
-        {
+
+        if (document.getElementById("regNr").value == "") {
             //Disable button
             document.getElementById("btn").setAttribute("disabled", "disabled");
             //ErrorMessage
-            document.getElementById("error").innerHTML="Please enter a registration number!"
+            document.getElementById("error").innerHTML = "Please enter a registration number!"
         }
         else {
-            //Enable button
-            document.getElementById("btn").removeAttribute("disabled");
+            let charOk = new RegExp("[a-zA-Z0-9]");
+            if (document.getElementById("regNr").value.match(charOk))
+            {
+                    //Enable button
+                    document.getElementById("btn").removeAttribute("disabled");
+                    document.getElementById("error").innerHTML = "";
+            }
+            else
+            {
+                document.getElementById("error").innerHTML = "Please enter a correct registration number!";
+            }
+
         }
-
     }
-
 </script>
