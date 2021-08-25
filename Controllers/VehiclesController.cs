@@ -158,13 +158,6 @@ namespace Garage2._0.Controllers
                     break;
 
 
-                case "DurationParkedSortingAscending":
-                    allVehicles = allVehicles.OrderBy(x => x.TimeOfArrival);
-                    break;
-                case "DurationParkedSortingOrderByDescending":
-                    allVehicles = allVehicles.OrderByDescending(x => x.TimeOfArrival);
-                    break;
-
                 default:
                     allVehicles = allVehicles.OrderBy(x => x.VehicleType);
                     break;
@@ -344,7 +337,7 @@ namespace Garage2._0.Controllers
             var v1 = await db.Vehicle.AsNoTracking().FirstOrDefaultAsync(v => v.Id == Id);           
 
             if (!Equals(v1, vehicle))
-            {               
+            {            
 
                 if (Id != vehicle.Id)
                 {
@@ -502,32 +495,5 @@ namespace Garage2._0.Controllers
             return View(model);
         }
     }
-
-    /*
-     class VehicleEqualityComparer 
-     {
-         public bool Equals(Vehicle b1, Vehicle b2)
-         {
-             if (b2 == null && b1 == null)
-                 return true;
-             else if (b1 == null || b2 == null)
-                 return false;
-             else if (b1.RegistrationNumber == b2.RegistrationNumber && b1.Color == b2.Color
-                                 && b1.Brand == b2.Brand && b1.VehicleModel == b2.VehicleModel && b1.NumberOfWheels == b2.NumberOfWheels)
-                 return true;
-             else
-                 return false;
-         }
-
-         public int GetHashCode(Vehicle bx)
-         {
-             int hCode = bx.RegistrationNumber ^ bx.Color ^ bx.Brand ^ bx.VehicleModel ^ bx.NumberOfWheels;
-             return hCode.GetHashCode();
-         }
-
-
-
-     }
-    */
 
 }
