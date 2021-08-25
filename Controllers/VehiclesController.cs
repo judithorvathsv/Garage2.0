@@ -44,7 +44,7 @@ namespace Garage2._0.Controllers
             }
             else
             {
-                TempData["Regnumber"] = searchText.ToUpper();
+                TempData["Regnumber"] = searchText?.ToUpper();
                 // Fordonet finns inte
                 //ViewBag.RegNr = searchText.ToUpper();
                 return View(nameof(Park));
@@ -206,7 +206,7 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
             bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
- 
+
             if (!registeredvehicle)
             {
                 var model = new Vehicle
@@ -241,6 +241,7 @@ namespace Garage2._0.Controllers
                             //Exception thrown from System.Data.Entity.DbContext.GetValidationErrors when an
                             //exception is thrown from the validation code.
                         }
+                        else { }
                     }
                 }
                 return View(model);
@@ -251,7 +252,7 @@ namespace Garage2._0.Controllers
                 TempData["Message"] = "Your vehicle is alredy registred!";
                 return RedirectToAction("Details", new { id = existingvehicle.Id });
             }
-    
+
         }
         [HttpGet]
         public async Task<IActionResult> ParkRegisteredVehicle(int? id)
@@ -284,7 +285,7 @@ namespace Garage2._0.Controllers
         {
             var vehicle = await db.Vehicle.FirstOrDefaultAsync(x => x.Id == id);
             vehicle.IsParked = false;
-            var departureTime = DateTime.Now;      
+            var departureTime = DateTime.Now;
 
             try
             {
@@ -322,42 +323,58 @@ namespace Garage2._0.Controllers
             return View(vehicle);
         }
 
-     
-      [HttpPost]
+        public bool Equals(Vehicle b1, Vehicle b2)
+        {       
+            if (b1.RegistrationNumber == b2.RegistrationNumber && b1.Color == b2.Color && b1.Brand == b2.Brand 
+                && b1.VehicleModel == b2.VehicleModel && b1.NumberOfWheels == b2.NumberOfWheels && b1.VehicleType == b2.VehicleType)
+                return true;
+            else
+                return false;
+        }
+
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Change(int Id, [Bind("Id, VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
+        public async Task<IActionResult> Change(int Id, Vehicle vehicle)
         {
-            if (Id != vehicle.Id)
-            {
-                return NotFound();
-            }
+            //från databasen
+            var v1 = await db.Vehicle.AsNoTracking().FirstOrDefaultAsync(v => v.Id == Id);           
 
-            string str = vehicle.Color;
-            vehicle.Color = FirstLetterToUpper(str);
+            if (!Equals(v1, vehicle))
+            {               
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (Id != vehicle.Id)
                 {
-                    db.Update(vehicle);
-                    TempData["ChangedVehicle"] = "The vehicle is changed!";
-                    await db.SaveChangesAsync();
-                    return RedirectToAction("Details", new {vehicle.Id });
-                    // return RedirectToAction("Details", new { Id = vehicle.Id });
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                string str = vehicle.Color;
+                vehicle.Color = FirstLetterToUpper(str);
+
+                if (ModelState.IsValid)
                 {
-                    if (!VehicleExists(vehicle.Id))
+                    try
                     {
-                        return NotFound();
+                        db.Update(vehicle);
+                        await db.SaveChangesAsync();
+                        TempData["ChangedVehicle"] = "The vehicle is changed!";
+                        return RedirectToAction("Details", new { vehicle.Id });
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!VehicleExists(vehicle.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
-                }               
+                }
             }
-            return View(vehicle);
+            //return View(vehicle);
+            return RedirectToAction("Details", new { vehicle.Id });
         }
 
         private string FirstLetterToUpper(string str)
@@ -371,7 +388,7 @@ namespace Garage2._0.Controllers
             return str.ToUpper();
         }
 
-   
+
 
         /*
         // POST: Vehicles/Edit/5
@@ -460,4 +477,32 @@ namespace Garage2._0.Controllers
             return View(model);
         }
     }
+
+    /*
+     class VehicleEqualityComparer 
+     {
+         public bool Equals(Vehicle b1, Vehicle b2)
+         {
+             if (b2 == null && b1 == null)
+                 return true;
+             else if (b1 == null || b2 == null)
+                 return false;
+             else if (b1.RegistrationNumber == b2.RegistrationNumber && b1.Color == b2.Color
+                                 && b1.Brand == b2.Brand && b1.VehicleModel == b2.VehicleModel && b1.NumberOfWheels == b2.NumberOfWheels)
+                 return true;
+             else
+                 return false;
+         }
+
+         public int GetHashCode(Vehicle bx)
+         {
+             int hCode = bx.RegistrationNumber ^ bx.Color ^ bx.Brand ^ bx.VehicleModel ^ bx.NumberOfWheels;
+             return hCode.GetHashCode();
+         }
+
+
+
+     }
+    */
+
 }
