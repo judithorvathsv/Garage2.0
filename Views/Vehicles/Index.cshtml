@@ -17,6 +17,11 @@
 </div>
 <script>
     function validate() {
+        let str = document.getElementById("regNr").value;
+        if (str.indexOf(' ') >= 0) {
+            let result = str.replaceAll(' ', '');
+            document.getElementById("regNr").value = result;
+        }
 
         if (document.getElementById("regNr").value == "") {
             //Disable button
@@ -25,7 +30,9 @@
             document.getElementById("error").innerHTML = "Please enter a registration number!"
         }
         else {
-            let charOk = new RegExp("[a-zA-Z0-9]");
+            let charOk = new RegExp("[a-zA-Z-0-9]+S");
+          
+
             if (document.getElementById("regNr").value.match(charOk))
             {
                     //Enable button
