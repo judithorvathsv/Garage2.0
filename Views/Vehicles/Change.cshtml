@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Change">
-
+            <input asp-for="Id" type="hidden" />
             <div class="form-group">
                 <label asp-for="RegistrationNumber" class="control-label"></label>
                 <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />
@@ -43,7 +43,7 @@
                 <input asp-for="NumberOfWheels" class="form-control" />
                 <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
             </div>
-
+            <input asp-for="TimeOfArrival" type="hidden" />
             @if (Model.IsParked == true)
             {
                 <input asp-for="IsParked" value="true" type="hidden" />
