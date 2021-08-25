@@ -146,19 +146,20 @@ namespace Garage2._0.Controllers
             }
 
             var model = new OverviewListModel();
+            model.Overview = await allVehicles.Select(v => new OverviewViewModel
+            {
+                VehicleParked = v.IsParked,
+                VehicleId = v.Id,
+                VehicleType = v.VehicleType,
+                VehicleRegistrationNumber = v.RegistrationNumber,
+                VehicleArrivalTime = v.TimeOfArrival,
+                VehicleParkDuration = DateTime.Now - v.TimeOfArrival
 
-            var vehicles = await db.Vehicle.ToListAsync();
-            model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
+            }).ToListAsync();
 
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
 
             return View(model);
-        }
-
-        // GET: Vehicles/Create
-        public IActionResult Park()
-        {
-            return View();
         }
 
         // POST: Vehicles/Create
