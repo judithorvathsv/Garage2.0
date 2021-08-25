@@ -1,24 +1,18 @@
-﻿@*@model Garage2._0.Models.Vehicle*@
+﻿@model Garage2._0.Models.ViewModels.UnParkResponseViewModel
 
 @{
     ViewData["Title"] = "UnParkResponse";
 }
 
-<h1>You have now unparked your vehicle successfully! Do you want a receipt?</h1>
-<p>You "@ViewBag.id" @*@Model.Id*@ left the garage at @ViewBag.departureTime</p>
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Vehicles" asp-action="Receipt(@ViewBag.id,@ViewBag.departureTime)">Yes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Vehicles" asp-action="Overview">No</a>
-        </li>
-    </ul>
+<h1>You have now unparked your vehicle successfully! </h1>
+<p>Your @Model.VehicleType with regnr @Model.VehicleRegistrationNumber left the garage at @Model.VehicleDepartureTime</p>
+<p>Do you want a receipt?</p>
+<div class="row">
+    <div class="p-1">
+        <a class="btn btn-primary" asp-controller="Vehicles" asp-action="Receipt" asp-route-id="@Model.Id" asp-route-departureTime="@Model.VehicleDepartureTime">Yes I want a receipt</a>
+    </div>
+    <div class="p-1">
+        <a class="btn btn-primary" asp-controller="Vehicles" asp-action="Index">No receipt, back to Index page</a>
+    </div>
 </div>
-<div>
-    <a asp-controller="Vehicles" asp-action="Receipt(@ViewBag.id,@ViewBag.departureTime)">Yes I want a receipt</a>
-</div>
-<div>
-    <a asp-action="Overview">Back to Overview</a>
-</div>
+

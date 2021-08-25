@@ -435,11 +435,27 @@ namespace Garage2._0.Controllers
         {
             return db.Vehicle.Any(e => e.Id == id);
         }
-        public IActionResult UnParkResponse(int id, DateTime departureTime)
+        public async Task<IActionResult> UnParkResponse(int id, DateTime departureTime)
         {
-            ViewBag.id = id;
-            ViewBag.departureTime = departureTime;
-            return View(nameof(UnParkResponse));
+            //    var v = db.Vehicle
+            //.Select(v => v.Id);
+            var model = await db.Vehicle
+                .Select(v => new UnParkResponseViewModel
+                {
+                    Id = v.Id,
+                    VehicleType= v.VehicleType,
+                    VehicleRegistrationNumber = v.RegistrationNumber,
+                    VehicleArrivalTime = v.TimeOfArrival,
+                    VehicleDepartureTime = departureTime,
+                    //VehicleParkDuration=v.
+                    //VehicleParkPrice
+                })
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            return View("UnParkResponse", model);
+            //ViewBag.id = id;
+            //ViewBag.departureTime = departureTime;
+            //return View(nameof(UnParkResponse));
         }
 
         public async Task<IActionResult> Receipt(int id, DateTime departureTime)
