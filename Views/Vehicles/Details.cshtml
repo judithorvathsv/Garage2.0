@@ -15,8 +15,6 @@
         <p><span style="color:red;"> @TempData["ChangedVehicle"] </span></p>
             }
 
-
-
             <hr />
             <dl class="row">
                 <dt class="col-sm-2">
@@ -84,5 +82,5 @@
         <a class="btn btn-primary" asp-action="ParkRegisteredVehicle" asp-route-id="@Model.Id">Park</a>
     }
     <a class="btn btn-secondary" asp-action="Change" asp-route-id="@Model.Id">Change</a>
-    <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+
 </div>
