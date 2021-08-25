@@ -12,11 +12,11 @@
         <div class="col-sm-12 col-md-12 col-lg-8 pt-3">
             <form asp-action="Filter" class="input-group ml-5">
                 <div class="input-group-append w-25">
-                    <input type="text" class="form-control form-control-sm" name="Regnumber" placeholder="Registration number..." />
+                    <input type="text" class="form-control form-control-sm" name="Regnumber" style="text-transform:uppercase;" placeholder="Registration number..." />
                 </div>
                 <div class="input-group-append w-50">
                     <select name="Types" asp-items="@Model.VehicleTypesSelectList" class="form-control form-control-sm">
-                        <option selected="selected" value="">Please select</option>
+                        <option selected="selected" value="">Please select type</option>
                     </select>
                 </div>
                 <div class="input-group-append">
@@ -40,20 +40,25 @@
             @foreach (var item in Model.Overview)
             {
                 if (item.VehicleParked)
-                { 
-                <tr>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleType)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleArrivalTime)  </td>
-                    <td>  @Html.DisplayFor(modelItem => item.VehicleParkDuration) </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
-                        <a asp-action="Change" asp-route-id="@item.VehicleId">Change</a> |
-                        <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
-                    </td>
-                </tr>
+                {
+                    <tr>
+                        <td>  @Html.DisplayFor(modelItem => item.VehicleType)  </td>
+                        <td>  @Html.DisplayFor(modelItem => item.VehicleRegistrationNumber)  </td>
+                        <td>  @Html.DisplayFor(modelItem => item.VehicleArrivalTime)  </td>
+                        <td>  @Html.DisplayFor(modelItem => item.VehicleParkDuration) </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
+                            <a asp-action="Change" asp-route-id="@item.VehicleId">Change</a> |
+                            <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
+                        </td>
+                    </tr>
+
                 }
             }
         </tbody>
     </table>
+    @if (Model.Overview.Count() < 1)
+    {
+        <p class="text-danger text-center">There is no parked vehicles with this search information!</p>
+    }
 </div>
