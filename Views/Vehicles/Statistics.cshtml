@@ -1,0 +1,44 @@
+﻿@model StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistics";
+    Layout = "_Layout";
+}
+
+
+<ul class="col">
+    <li class="row">
+        <label asp-for="NumberOfWheels" class="control-label"></label>
+        <div class="col">
+            @Model.NumberOfWheels
+        </div>
+    </li>
+    <li class="row">
+        <label asp-for="GeneratedRevenue" class="control-label"></label>
+        <div class="col">
+            @Html.DisplayFor(Model => Model.GeneratedRevenue)
+        </div>
+    </li>
+</ul>
+<h4 class="m-2 p-2">Amount of vehicles by type</h4>
+
+<table class="table table-striped col-lg-4">
+    <thead>
+        <tr>
+            <th scope="col">Vehicle Type</th>
+            <th scope="col">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var type in Model.VehicleTypesData)
+        {
+            @if (type.Value != 0)
+            {
+                <tr>
+                    <td class="py-0">@Html.DisplayFor(modelType => type.Key)</td>
+                    <td class="py-0">@Html.DisplayFor(modelType => type.Value)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

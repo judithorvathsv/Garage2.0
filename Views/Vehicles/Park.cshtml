@@ -18,11 +18,11 @@
 
                 @if (TempData["Regnumber"] != null)
                 {
-                    <input asp-for="RegistrationNumber" value='@TempData["Regnumber"]' class="form-control" />
+                    <input asp-for="RegistrationNumber" value='@TempData["Regnumber"]' class="form-control" autofocus />
                 }
                 else
                 {
-                    <input asp-for="RegistrationNumber" class="form-control" />
+                    <input asp-for="RegistrationNumber" class="form-control" autofocus />
                 }
                 <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
             </div>
