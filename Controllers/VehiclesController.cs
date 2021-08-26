@@ -457,7 +457,7 @@ namespace Garage2._0.Controllers
                 VehicleArrivalTime = vehicle.TimeOfArrival,
                 VehicleDepartureTime = departureTime,
                 VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
-                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
+                VehicleParkPrice = (departureTime - vehicle.TimeOfArrival).TotalHours * 100
             };
 
             return View(model);
@@ -497,8 +497,8 @@ namespace Garage2._0.Controllers
                 GeneratedRevenue = vehicles
                                     .Where(v => v.IsParked)
                                     .Select(v => 
-                                        (DateTime.Now - v.TimeOfArrival).Hours
-                                      + (DateTime.Now - v.TimeOfArrival).Days * 24
+                                        (DateTime.Now - v.TimeOfArrival).TotalHours
+                                      + (DateTime.Now - v.TimeOfArrival).TotalDays * 24
                                         )
                                     .Sum() * 100
             };
