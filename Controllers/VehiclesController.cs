@@ -268,7 +268,7 @@ namespace Garage2._0.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Receipt", new { id = vehicle.Id, departureTime });
+            return RedirectToAction("UnparkResponse", new { id = vehicle.Id, departureTime });
         }
 
         public async Task<IActionResult> Change(int? Id)
@@ -457,7 +457,7 @@ namespace Garage2._0.Controllers
                 VehicleArrivalTime = vehicle.TimeOfArrival,
                 VehicleDepartureTime = departureTime,
                 VehicleParkDuration = vehicle.TimeOfArrival - departureTime,
-                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100 + 100
+                VehicleParkPrice = (DateTime.Now - vehicle.TimeOfArrival).TotalHours * 100
             };
 
             return View(model);
@@ -496,8 +496,8 @@ namespace Garage2._0.Controllers
 
                 GeneratedRevenue = vehicles
                                     .Where(v => v.IsParked)
-                                    .Select(v => 100
-                                      + (DateTime.Now - v.TimeOfArrival).Hours
+                                    .Select(v => 
+                                        (DateTime.Now - v.TimeOfArrival).Hours
                                       + (DateTime.Now - v.TimeOfArrival).Days * 24
                                         )
                                     .Sum() * 100

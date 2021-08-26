@@ -22,23 +22,23 @@ namespace Garage2._0.Models
         [RegularExpression("^([a-zA-Z-0-9]+)$", ErrorMessage = "Invalid registration number!")]
         public string RegistrationNumber { get; set; }
 
-        [RegularExpression("^([a-zA-Z]+)$", ErrorMessage = "Invalid color!")]
+        [RegularExpression("^([a-zA-Zåäö]+)$", ErrorMessage = "Invalid color!")]
         [Required(ErrorMessage = "Please enter color!")]
         [MaxLength(20)]
-        [MinLength(3)]
+        [MinLength(3, ErrorMessage = "The name of the color must be longer!")]
         public string Color { get; set; }
 
         [RegularExpression("^[a-zA-Z0-9åäö][a-zA-Z0-9-\\såäö]+", ErrorMessage = "Invalid brand!")]
         [Required(ErrorMessage = "Please enter brand!")]
         [MaxLength(20)]
-        [MinLength(3)]
+        [MinLength(3, ErrorMessage = "The brand name must be longer!")]
         public string Brand { get; set; }
 
         [Display(Name = "Vehicle model")]
         [RegularExpression("^[a-zA-Z0-9åäö][a-zA-Z0-9-\\såäö]+", ErrorMessage = "Invalid model!")]
         [Required(ErrorMessage = "Please enter model!")]   
         [MaxLength(20)]
-        [MinLength(1)]
+        [MinLength(1, ErrorMessage = "The model name must be longer!")]
         public string VehicleModel { get; set; }
 
         [Display(Name = "Number of wheels")]
