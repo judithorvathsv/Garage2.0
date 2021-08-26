@@ -6,6 +6,7 @@
         <div class="input-group mb-3">
             <input id="regNr" class="form-control" type="text" name="searchText" placeholder="Enter vehicle registration number"
                    style="text-transform:uppercase;" oninput="validate()"  maxlength="10"/>
+            <span id="errormessage"></span>
             <div class="input-group-append">
                 <button id="btn" class="btn btn-outline-info" disabled="disabled" type="submit">Search</button>
             </div>
@@ -16,13 +17,21 @@
     <p class="text-center lead">Welcome to the Garage the price of parking is 100 kr / hour.</p>
 </div>
 <script>
+    //document.getElementById("regNr").addEventListener("onmouseout", reset);
+    document.getElementById("regNr").onchange = function ()
+    {
+        document.getElementById("btn").removeAttribute("disabled");
+        document.getElementById("error").innerHTML = "";
+    };
+
     function validate() {
+        document.getElementById("btn").removeAttribute("disabled");
         let str = document.getElementById("regNr").value;
         if (str.indexOf(' ') >= 0) {
             let result = str.replaceAll(' ', '');
             document.getElementById("regNr").value = result;
         }
-
+   
         if (document.getElementById("regNr").value == "") {
             //Disable button
             document.getElementById("btn").setAttribute("disabled", "disabled");
@@ -30,11 +39,13 @@
             document.getElementById("error").innerHTML = "Please enter a registration number!"
         }
         else {
-            let charOk = new RegExp("[a-zA-Z-0-9]+S");
-          
+            let charOk = new RegExp("^[a-zA-Z0-9](?:[a-zA-Z0-9_-]*[a-zA-Z0-9])?$");
+            document.getElementById("error").innerHTML = "";
 
             if (document.getElementById("regNr").value.match(charOk))
             {
+                let regnumber = document.getElementById("regNr").value
+                console.log(regnumber);
                     //Enable button
                     document.getElementById("btn").removeAttribute("disabled");
                     document.getElementById("error").innerHTML = "";
@@ -42,6 +53,8 @@
             else
             {
                 document.getElementById("error").innerHTML = "Please enter a correct registration number!";
+                //Disable button
+                document.getElementById("btn").setAttribute("disabled", "disabled");
             }
 
         }

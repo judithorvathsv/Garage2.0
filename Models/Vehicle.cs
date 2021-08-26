@@ -19,23 +19,23 @@ namespace Garage2._0.Models
         [Required(ErrorMessage = "Please enter registration number!")]
         [MaxLength(10)]
         [MinLength(3)]
-        [RegularExpression("^([a-zA-Z-0-9]+)$", ErrorMessage = "Invalid registration number!")]
+        [RegularExpression("^([-a-zA-Z-0-9-]+)$", ErrorMessage = "Invalid registration number!")]
         public string RegistrationNumber { get; set; }
 
-        [RegularExpression("^([a-zA-Z]+)$", ErrorMessage = "Invalid color!")]
+        [RegularExpression("^([a-zA-Z ]+)$", ErrorMessage = "Invalid color!")]
         [Required(ErrorMessage = "Please enter color!")]
         [MaxLength(20)]
         [MinLength(3)]
         public string Color { get; set; }
 
-        [RegularExpression("^([a-zA-Z-0-9]+)$", ErrorMessage = "Invalid brand!")]
+        [RegularExpression("^([a-zA-Z-0-9- ]+)$", ErrorMessage = "Invalid brand!")]
         [Required(ErrorMessage = "Please enter brand!")]
         [MaxLength(20)]
         [MinLength(3)]
         public string Brand { get; set; }
 
         [Display(Name = "Vehicle model")]
-        [RegularExpression("^([a-zA-Z-0-9]+)$", ErrorMessage = "Invalid model!")]
+        [RegularExpression("^([-a-zA-Z-0-9- ]+)$", ErrorMessage = "Invalid model!")]
         [Required(ErrorMessage = "Please enter model!")]   
         [MaxLength(20)]
         [MinLength(1)]
