@@ -97,7 +97,7 @@ namespace Garage2._0.Controllers
 
             var result = string.IsNullOrWhiteSpace(viewModel.Regnumber) ?
                            vehicles :
-                           vehicles.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber));
+                           vehicles.Where(m => m.RegistrationNumber.StartsWith(viewModel.Regnumber.ToUpper()));
 
             result = viewModel.Types == null ?
                                     result :
