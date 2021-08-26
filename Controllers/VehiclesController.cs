@@ -213,7 +213,7 @@ namespace Garage2._0.Controllers
             else
             {
                 var existingvehicle = await db.Vehicle.FirstOrDefaultAsync(v => v.RegistrationNumber.Contains(vehicle.RegistrationNumber));
-                TempData["Message"] = "A vehicle with this registrationnumber is alredy registred!";
+                TempData["Message"] = "A vehicle with this registration number is already registered!";
                 return RedirectToAction("Details", new { id = existingvehicle.Id });
             }
 
