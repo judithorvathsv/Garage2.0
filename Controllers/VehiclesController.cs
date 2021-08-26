@@ -170,12 +170,13 @@ namespace Garage2._0.Controllers
         public async Task<IActionResult> Park([Bind("Id,VehicleType,RegistrationNumber,Color,Brand,VehicleModel,NumberOfWheels,IsParked,TimeOfArrival")] Vehicle vehicle)
         {
             bool registeredvehicle = db.Vehicle.Any(v => v.RegistrationNumber == vehicle.RegistrationNumber);
+            //var regnumber = vehicle.RegistrationNumber.ToUpper();
  
             if (!registeredvehicle)
             {
                 var model = new Vehicle
                 {
-                    RegistrationNumber = vehicle.RegistrationNumber,
+                    RegistrationNumber = vehicle.RegistrationNumber.ToUpper(),
                     VehicleType = vehicle.VehicleType,
                     Brand = vehicle.Brand,
                     Color = vehicle.Color,
@@ -313,7 +314,9 @@ namespace Garage2._0.Controllers
                 }
 
                 string str = vehicle.Color;
+                vehicle.RegistrationNumber = v1.RegistrationNumber;
                 vehicle.Color = FirstLetterToUpper(str);
+                vehicle.TimeOfArrival = v1.TimeOfArrival;
 
                 if (ModelState.IsValid)
                 {

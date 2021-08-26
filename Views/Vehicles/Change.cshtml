@@ -41,7 +41,6 @@
                 <input min="0" max="30" asp-for="NumberOfWheels" class="form-control" />
                 <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="TimeOfArrival" />
 
             @if (Model.IsParked == true)
             {
