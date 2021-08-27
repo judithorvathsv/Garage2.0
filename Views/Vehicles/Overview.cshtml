@@ -1,18 +1,19 @@
-﻿@model OverviewListModel
+﻿@model OverviewListViewModel
 
 @{
     ViewData["Title"] = "Overview";
     Layout = "_LayoutOverview";
 }
+<link rel="canonical" href="https://getbootstrap.com/docs/4.6/components/buttons/">
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-4">
             <h1>Garage Overview</h1>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-8 pt-3">
-            <form asp-action="Filter" class="input-group ml-5">
+        <div class="col-sm-8 col-md-8 col-lg-5 pt-3">
+            <form asp-action="Filter" class="input-group ml-1">
                 <div class="input-group-append w-25">
-                    <input type="text" class="form-control form-control-sm" name="Regnumber" style="text-transform:uppercase;" placeholder="Registration number..." />
+                    <input type="text" class="form-control form-control-sm" name="Regnumber" style="text-transform:uppercase;" placeholder="Regnumber..." />
                 </div>
                 <div class="input-group-append w-50">
                     <select name="Types" asp-items="@Model.VehicleTypesSelectList" class="form-control form-control-sm">
@@ -24,8 +25,44 @@
                 </div>
             </form>
         </div>
-    </div>
+        <div class="col-sm-4 col-md-4 col-lg-3 pt-3">
+            <form asp-action="ParkingStatus" asp-controller="Vehicles" method="post">
+                <div class="btn-group btn-group-sm btn-group-toggle" id="checkboxes" data-toggle="buttons">
 
+                    @Model.RadioButtons
+
+                    @*@for(var i = 0; i < Model.RadioButtons.Count(); i++)
+        {
+
+            @if (Model.RadioButtons[i].IsDisabled)
+            { *@
+                    @if (Model.ParkedStatus)
+                    {
+                        <label class="btn btn-secondary active">
+                            <input type="radio" value="" id='' asp-for='@Model.SelectedRadio' enabled>Parked
+                        </label>
+
+                        <label class="btn btn-secondary ">
+                            <input type="radio" value="" id='' asp-for='@Model.SelectedRadio' disabled>Unparked
+                        </label>
+
+                        <label class="btn btn-secondary ">
+                            <input type="radio" id='AllStatus' enabled>Allparked
+                        </label>
+                    }
+                    
+
+                    @*}
+        else
+        {*@
+
+                    @*}
+        }*@
+
+                </div>
+            </form>
+        </div>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -62,3 +99,33 @@
         <p class="text-danger text-center">There is no parked vehicles with this search information!</p>
     }
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@section scripts
+{
+    <script type="text/javascript">
+        (function () {
+
+            $('input:radio[name=options]').change(function () {
+                if ($(this).val() == 'true') {
+                    $(this).attr('checked', true);
+                 /*   $('input:radio[name=options]').attr('checked', true);*/
+                } else {
+                    // hide div
+                }
+
+    });
+        });
+
+        function buttonValue(e) {
+            alert(e.value);
+            if (e.value === 'true') {
+                $('input:radio[name=options]').attr('checked', true);
+            } else {
+               alert('it is false');
+            }
+        }
+    </script>
+
+}
+

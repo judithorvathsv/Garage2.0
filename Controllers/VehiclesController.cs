@@ -67,12 +67,13 @@ namespace Garage2._0.Controllers
 
         public async Task<IActionResult> Overview()
         {
-            var model = new OverviewListModel();
-
+            var model = new OverviewListViewModel();
+           
             var vehicles = await db.Vehicle.ToListAsync();
             model.Overview = vehicles.Select(v => OverviewViewModelBuilder(v));
-
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+            model.ParkedStatus = true;
+
             return View("Overview", model);
         }
 
@@ -89,10 +90,14 @@ namespace Garage2._0.Controllers
                         })
                         .ToListAsync();
         }
-
-        public async Task<IActionResult> Filter(OverviewListModel viewModel)
+        public async Task<IActionResult> ParkingStatus(OverviewListViewModel viewModel)
         {
-            var model = new OverviewListModel();
+            var model = new OverviewListViewModel();
+            return View(nameof(Overview), model);
+        }
+        public async Task<IActionResult> Filter(OverviewListViewModel viewModel)
+        {
+            var model = new OverviewListViewModel();
             var vehicles = await db.Vehicle.ToListAsync();
 
             var result = string.IsNullOrWhiteSpace(viewModel.Regnumber) ?
@@ -145,7 +150,7 @@ namespace Garage2._0.Controllers
                     break;
             }
 
-            var model = new OverviewListModel();
+            var model = new OverviewListViewModel();
             model.Overview = await allVehicles.Select(v => new OverviewViewModel
             {
                 VehicleParked = v.IsParked,
