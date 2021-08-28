@@ -25,5 +25,6 @@ namespace Garage2._0.Models.ViewModels
         [DisplayFormat(DataFormatString = "{0:%d} day(s) {0:hh'h 'mm'm 'ss's'}", ApplyFormatInEditMode = true)]
         [Display(Name = "Duration Parked")]
         public TimeSpan VehicleParkDuration { get; set; }
+        public object TimeOfArrival { get; internal set; }
     }
 }

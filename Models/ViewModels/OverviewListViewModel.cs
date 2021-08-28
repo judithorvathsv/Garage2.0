@@ -12,6 +12,8 @@ namespace Garage2._0.Models.ViewModels
     {
         public IEnumerable<SelectListItem> VehicleTypesSelectList { get; set; }
         public IEnumerable<OverviewViewModel> Overview { get; set; }
+        //public IEnumerable<Status>Status { get; set; }
+        public int SelectedStatus { get; set; }
 
         //SelectListBox
         public string Regnumber { get; set; }
@@ -22,31 +24,13 @@ namespace Garage2._0.Models.ViewModels
         public bool UnparkedStatus { get; set; }
         public bool AllStatus { get; set; }
 
-        public class InputProperties
-        {
-            public string Name { get; set; }
-            public string ElementId { get; set; }
-            public bool IsSelected { get; set; }
-            public bool IsDisabled { get; set; }
-        }
-
-        [BindProperty]
-        public List<InputProperties> RadioButtons { get; set; }
-
-        [BindProperty]
-        public string SelectedRadio { get; set; }
-
-        public void OnGet()
-        {
-            RadioButtons = new List<InputProperties>()
-            {
-                new InputProperties() { Name = "ParkedStatus", ElementId = "Parked" },
-                new InputProperties() { Name = "UnparkedStatus", ElementId = "UnParked" },
-                new InputProperties() { Name = "AllStatus", ElementId = "ParkedAll" }
-            };
-            SelectedRadio = "Warning";
-        }
 
 
     }
+
+    //public class Status
+    //{
+    //    public int Id { get; set; }
+    //    public string StatusName { get; set; }
+    //}
 }

@@ -77,3 +77,34 @@ body {
         visibility: hidden;
     }
 }
+
+/* Overview */
+/*.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+
+}
+
+    .btn-secondary active {
+        background-color: #545b62;
+        border-color: #4e555b;
+    }
+
+    .btn-secondary a {
+        color: #fff;
+    }
+
+    .btn-secondary a:hover {
+        color: #fff;
+        text-decoration:none;
+    }
+
+        .btn-secondary a:active {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-secondary a:visited {
+            color: #fff;
+            text-decoration: none;
+        }*/
