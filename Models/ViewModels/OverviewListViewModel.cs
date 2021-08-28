@@ -12,8 +12,6 @@ namespace Garage2._0.Models.ViewModels
     {
         public IEnumerable<SelectListItem> VehicleTypesSelectList { get; set; }
         public IEnumerable<OverviewViewModel> Overview { get; set; }
-        //public IEnumerable<Status>Status { get; set; }
-        public int SelectedStatus { get; set; }
 
         //SelectListBox
         public string Regnumber { get; set; }
@@ -23,14 +21,5 @@ namespace Garage2._0.Models.ViewModels
         public bool ParkedStatus { get; set; }
         public bool UnparkedStatus { get; set; }
         public bool AllStatus { get; set; }
-
-
-
     }
-
-    //public class Status
-    //{
-    //    public int Id { get; set; }
-    //    public string StatusName { get; set; }
-    //}
 }
