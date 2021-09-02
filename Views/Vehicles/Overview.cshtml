@@ -4,13 +4,25 @@
     ViewData["Title"] = "Overview";
     Layout = "_LayoutOverview";
 }
-
 <link rel="canonical" href="https://getbootstrap.com/docs/4.6/components/buttons/">
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-4">
             <h1>Garage Overview</h1>
+            @if (Model.ParkedStatus)
+            {
+                <h5>Parked Vehicles</h5>
+            }
+            else if (Model.UnparkedStatus)
+            {
+                <h5>Unparked Vehicles</h5>
+            }
+            else
+            {
+                <h5>All vehicles</h5>
+            }
         </div>
+
         <div class="col-sm-8 col-md-8 col-lg-5 pt-3">
             <form asp-action="Filter" class="input-group ml-1" id="FilterForm" method="get">
                 <div class="input-group-append w-25">
@@ -29,35 +41,24 @@
         <div class="col-sm-4 col-md-4 col-lg-3 pt-3 pr-4">
             <form asp-action="Overview" id="StatusForm" method="get">
                 <div class="btn-group btn-group-sm btn-group-toggle" id="checkboxes" data-toggle="buttons">
-                    <input type="hidden" id="parkedStatus" name="parkedStatus" />
-                    <label class='btn btn-secondary active'>
-                        <input type="radio" name="option" value="1" id='ParkedStatus' autocomplete="off">Parked
+                    <input type="hidden" id="parkedStatus" name="parkedStatus" value="0" />
+                    <label class="btn btn-secondary" id="Parked">
+                        <input type="radio" value="1" id='ParkedStatus' autocomplete="off">Parked
                         @*<a asp-action="Overview" asp-route-parkedStatus="1">Parked</a>*@
                     </label>
-                    <label class="btn btn-secondary">
-                        <input type="radio" name="option" value="2" id='UnParkedStatus' autocomplete="off">Unparked
+                    <label class="btn btn-secondary" id="Unparked">
+                        <input type="radio" value="2" id='UnParkedStatus' autocomplete="off">Unparked
                         @*<a asp-action="Overview" asp-route-parkedStatus="2">Unparked</a>*@
                     </label>
-                    <label class="btn btn-secondary">
-                        <input type="radio" name="option" value="3" id='AllStatus' autocomplete="off">All
+                    <label class="btn btn-secondary" id="All">
+                        <input type="radio" value="3" id='AllStatus' autocomplete="off">All
                         @*<a asp-action="Overview" asp-route-parkedStatus="3">All</a>*@
                     </label>
                 </div>
             </form>
         </div>
     </div>
-    @if (Model.ParkedStatus)
-    {
-        <h5>Parked Vehicles</h5>
-    }
-    else if (Model.UnparkedStatus)
-    {
-        <h5>Unparked Vehicles</h5>
-    }
-    else
-    {
-        <h5>All vehicles</h5>
-    }
+
     @*<partial name="OverviewPartial" model="@Model.Overview" />*@
     <table class="table">
         <thead>
@@ -94,46 +95,6 @@
 
 @section scripts
 {
-    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>*@
-    <script type="text/javascript">
-        (function () {
-
-            $('form#StatusForm').find('#ParkedStatus').on('change', function () {
-                let parked = $("#ParkedStatus").val();
-                console.log(parked);
-                $('form#StatusForm').append('<input type="hidden" name="parkedStatus" value="1"/>');
-                $('#parkedStatus').val(parked);
-                $('form#StatusForm').submit();
-            })
-            $('form#StatusForm').find('#UnParkedStatus').on('change', function () {
-                let unparked = $("#UnParkedStatus").val();
-                /*      $('form#StatusForm').append('<input type="hidden" name="parkedStatus" value="2"/>');*/
-                $('#parkedStatus').val(unparked);
-                console.log(unparked);
-                $('form#StatusForm').submit();
-
-            })
-            $('form#StatusForm').find('#AllStatus').on('change', function () {
-                let all = $("#AllStatus").val();
-                /*     $('form#StatusForm').append('<input type="hidden" name="parkedStatus" value="3"/>');*/
-                $('#parkedStatus').val(all);
-                $('form#StatusForm').submit();
-                console.log(all);
-            })
-
-            $('form#FilterForm').on('submit', function () {
-                let all = $("#AllStatus").val();
-                /*    $('form#FilterForm').append('<input type="hidden" id="parkedStatus" name="parkedStatus" value="1"/>');*/
-                $('form#FilterForm').submit();
-
-            });
-
-
-
-        })();
-
-
-    </script>
-
+    <script src="~/js/overview.js"></script>
 }
 

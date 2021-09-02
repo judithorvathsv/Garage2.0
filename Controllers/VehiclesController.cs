@@ -72,7 +72,10 @@ namespace Garage2._0.Controllers
 
             var allVehicles = db.Vehicle;
 
-            IQueryable<OverviewViewModel> vehicles = GetOverviewViewModel(allVehicles);
+            //IQueryable<OverviewViewModel> vehicles = GetOverviewViewModel(allVehicles);
+            string parkedStatusStr = parkedStatus.ToString();
+            var vehicles = GetOverviewViewModelAsEnumerable(allVehicles);
+            parkedStatus = ParkingStatus(parkedStatusStr, model, ref vehicles);
 
             if (parkedStatus == 3)
             {
@@ -92,7 +95,7 @@ namespace Garage2._0.Controllers
                 vehicles = vehicles.Where(u => u.VehicleParked.Equals(true));
             }
             model.VehicleTypesSelectList = await GetVehicleTypesAsync();
-            model.Overview = await vehicles.ToListAsync();
+            model.Overview = vehicles;
 
             return View("Overview", model);
         }
@@ -160,7 +163,50 @@ namespace Garage2._0.Controllers
             var vehicles = GetOverviewViewModelAsEnumerable(allVehicles);
 
             int parkedStatus = 0;
-            if (int.TryParse(parkedStatusStr, out parkedStatus)) 
+            parkedStatus = ParkingStatus(parkedStatusStr, model, ref vehicles);
+
+            switch (sortingVehicle)
+            {
+                case "VehicleTypeSortingAscending":
+                    vehicles = vehicles.OrderBy(x => x.VehicleType);
+                    break;
+                case "VehicleTypeSortingDescending":
+                    vehicles = vehicles.OrderByDescending(x => x.VehicleType);
+                    break;
+                case "RegistrationNumberSortingAscending":
+                    vehicles = vehicles.OrderBy(x => x.VehicleRegistrationNumber);
+                    break;
+                case "RegistrationNumberSortingDescending":
+                    vehicles = vehicles.OrderByDescending(x => x.VehicleRegistrationNumber);
+                    break;
+                case "ArrivalTimeSortingAscending":
+                    vehicles = vehicles.OrderBy(x => x.VehicleArrivalTime);
+                    break;
+                case "ArrivalTimeSortingDescending":
+                    vehicles = vehicles.OrderByDescending(x => x.VehicleArrivalTime);
+                    break;
+                case "DurationParkedSortingAscending":
+                    vehicles = vehicles.OrderBy(x => x.VehicleParkDuration.Days);
+                    break;
+                case "DurationParkedSortingDescending":
+                    vehicles = vehicles.OrderByDescending(x => x.VehicleParkDuration.Days);
+                    break;
+
+                default:
+                    vehicles = vehicles.OrderBy(x => x.VehicleType);
+                    break;
+            }
+
+            model.Overview = vehicles;
+            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
+
+            return PartialView(nameof(Overview), model);
+        }
+
+        private int ParkingStatus(string parkedStatusStr, OverviewListViewModel model, ref IEnumerable<OverviewViewModel> vehicles)
+        {
+            int parkedStatus;
+            if (int.TryParse(parkedStatusStr, out parkedStatus))
             {
                 if (parkedStatus == 3)
                 {
@@ -180,43 +226,7 @@ namespace Garage2._0.Controllers
                     vehicles = vehicles.Where(u => u.VehicleParked.Equals(true));
                 }
             };
-
-            switch (sortingVehicle)
-            {
-                case "VehicleTypeSortingAscending":
-                    vehicles = vehicles.OrderBy(x => x.VehicleType);
-                    break;
-                case "VehicleTypeSortingDescending":
-                        vehicles = vehicles.OrderByDescending(x => x.VehicleType);
-                    break;
-                case "RegistrationNumberSortingAscending":
-                        vehicles = vehicles.OrderBy(x => x.VehicleRegistrationNumber);
-                    break;
-                case "RegistrationNumberSortingDescending":
-                        vehicles = vehicles.OrderByDescending(x => x.VehicleRegistrationNumber);
-                    break;
-                case "ArrivalTimeSortingAscending":
-                        vehicles = vehicles.OrderBy(x => x.VehicleArrivalTime);
-                    break;
-                case "ArrivalTimeSortingDescending":
-                        vehicles = vehicles.OrderByDescending(x => x.VehicleArrivalTime);
-                    break;
-                case "DurationParkedSortingAscending":
-                        vehicles = vehicles.OrderBy(x => x.VehicleParkDuration.Days);
-                    break;
-                case "DurationParkedSortingDescending":
-                        vehicles = vehicles.OrderByDescending(x => x.VehicleParkDuration.Days);
-                    break;
-
-                default:
-                    vehicles = vehicles.OrderBy(x => x.VehicleType);
-                    break;
-            }
-       
-            model.Overview = vehicles;
-            model.VehicleTypesSelectList = await GetVehicleTypesAsync();
-
-            return PartialView(nameof(Overview), model);
+            return parkedStatus;
         }
 
         private IQueryable<OverviewViewModel> GetOverviewViewModel(IQueryable<Vehicle> allVehicles)
