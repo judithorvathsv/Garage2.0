@@ -6,50 +6,53 @@
 
 <h1>Change</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Change">
-            <input asp-for="Id" type="hidden" />
-            <div class="form-group">
-                <label asp-for="RegistrationNumber" class="control-label"></label>
-                <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />
-                <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleType" class="control-label typeLabel">Type  </label>
-                <select name="VehicleType" asp-for="VehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
-                    <option selected="selected" value="">Please select</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Brand" class="control-label"></label>
-                <input asp-for="Brand" class="form-control" />
-                <span asp-validation-for="Brand" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleModel" class="control-label"></label>
-                <input asp-for="VehicleModel" class="form-control" />
-                <span asp-validation-for="VehicleModel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumberOfWheels" class="control-label"></label>
-                <input min="0" max="30" asp-for="NumberOfWheels" class="form-control" />
-                <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
-            </div>
 
-            @if (Model.IsParked == true)
-            {
-                <input asp-for="IsParked" value="true" type="hidden" />
-            }
-            else
-            {
-                <input asp-for="IsParked" value="false" type="hidden" />
-            }
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Change">
+                <input asp-for="Id" type="hidden" />
+                <div class="form-group">
+                    <label asp-for="RegistrationNumber" class="control-label"></label>
+                    <input asp-for="RegistrationNumber" class="form-control" readonly="@(true)" />
+                    <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VehicleType" class="control-label typeLabel">Type  </label>
+                    <select name="VehicleType" asp-for="VehicleType" asp-items="@Html.GetEnumSelectList<VehicleTypes>()" class="form-control">
+                        <option selected="selected" value="">Please select</option>
+                    </select>
+                    <span asp-validation-for="VehicleType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Color" class="control-label"></label>
+                    <input asp-for="Color" class="form-control" />
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Brand" class="control-label"></label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VehicleModel" class="control-label"></label>
+                    <input asp-for="VehicleModel" class="form-control" />
+                    <span asp-validation-for="VehicleModel" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NumberOfWheels" class="control-label"></label>
+                    <input min="0" max="30" asp-for="NumberOfWheels" class="form-control" />
+                    <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
+                </div>
+
+
+                @if (Model.IsParked == true)
+                {
+                    <input asp-for="IsParked" value="true" type="hidden" />
+                }
+                else
+                {
+                    <input asp-for="IsParked" value="false" type="hidden" />
+                }
 
             <div class="form-group">
                 <input type="submit" id="Change" value="Change" class="btn btn-primary" />
